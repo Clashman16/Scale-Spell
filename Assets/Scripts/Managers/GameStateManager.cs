@@ -1,22 +1,29 @@
 using System;
 
-public static class GameStateManager
+namespace Behaviours
 {
-   public enum GameStateEnum
+   namespace Managers
    {
-      TITLESCREEN, PLAYING, PAUSED
-   }
+      public static class GameStateManager
+      {
+         private static GameStateEnum m_state = GameStateEnum.PLAYING;
 
-   private static GameStateEnum m_state = GameStateEnum.PLAYING;
+         public static GameStateEnum State
+         {
+            get { return m_state; }
+            set
+            {
+               m_gameStateChanged.Invoke(value);
+               m_state = value;
+            }
+         }
 
-   public static GameStateEnum State
-   {
-      get { return m_state; }
-      set {
-         m_gameStateChanged.Invoke(m_state);
-         m_state = value;
+         public static Action<GameStateEnum> m_gameStateChanged;
+      }
+
+      public enum GameStateEnum
+      {
+         TITLESCREEN, PLAYING, PAUSED
       }
    }
-
-   public static Action<GameStateEnum> m_gameStateChanged;
 }
