@@ -8,8 +8,17 @@ namespace Behaviours
    {
       public class TileBehaviour : MonoBehaviour
       {
-         public void Init(EnvironmentEnum p_environnement, int p_length)
+         private bool m_hasObstacle;
+
+         public bool HasObstacle()
          {
+            return m_hasObstacle;
+         }
+
+         public void Init(EnvironmentEnum p_environnement, int p_length, bool p_hasObstacle = false)
+         {
+            p_hasObstacle = m_hasObstacle;
+
             ChangeSprite(p_environnement);
             Resize(p_length);
          }

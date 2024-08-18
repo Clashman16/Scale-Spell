@@ -1,5 +1,4 @@
 using Behaviours.Managers.Spawners;
-using System;
 
 namespace Behaviours
 {
@@ -8,7 +7,7 @@ namespace Behaviours
       public sealed class MapManagerSingleton
       {
          private TileSpawner m_tileSpawner;
-
+         
          public TileSpawner TileSpawner()
          {
             return m_tileSpawner;

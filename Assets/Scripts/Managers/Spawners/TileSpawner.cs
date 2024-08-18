@@ -13,6 +13,10 @@ namespace Behaviours
 
          private TileBehaviour m_lastTile;
 
+         private int m_tileCount;
+
+         private ObstacleSpawner m_obstacleSpawner;
+
          public TileBehaviour LastTile()
          {
             return m_lastTile;
@@ -38,20 +42,23 @@ namespace Behaviours
          {
             m_lastTileType = EnvironmentEnum.NONE;
             m_lastLength = 0;
+            m_tileCount = 0;
+            m_obstacleSpawner = new ObstacleSpawner();
          }
 
          public void Spawn()
          {
-            GameObject l_tile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
+            m_tileCount++;
 
-            
+            bool l_hasObstacle = m_tileCount % 3 == 0 && !m_lastTile.HasObstacle();
+
+            GameObject l_tile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
 
             m_lastTileType = RandomTileType();
             m_lastLength = RandomLength();
            
-
             m_lastTile = l_tile.GetComponent<TileBehaviour>();
-            m_lastTile.Init(m_lastTileType, m_lastLength);
+            m_lastTile.Init(m_lastTileType, m_lastLength, l_hasObstacle);
 
             float l_tileWidth = l_tile.GetComponent<SpriteRenderer>().bounds.size.x;
 
@@ -61,6 +68,11 @@ namespace Behaviours
             l_tile.transform.position = l_spawnPosition;
 
             m_timeBeforeSpawn = l_tileWidth;
+
+            if(l_hasObstacle)
+            {
+               m_obstacleSpawner.Spawn(l_tile.transform, m_lastTileType);
+            }
          }
 
          public int RandomLength()
