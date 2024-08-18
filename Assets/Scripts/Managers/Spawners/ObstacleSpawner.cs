@@ -23,10 +23,6 @@ namespace Behaviours
             l_position.y = GetYCoordinate(l_prefabName);
             l_obstacle.transform.position = l_position;
 
-            if(l_prefabName == "Big Tree")
-            {
-               
-            }
             string l_spriteName = l_prefabName.ToLower();
             l_spriteName = l_spriteName.Replace(" ", "-");
             ObstacleType obstacleType = GetObstacleType();
@@ -52,9 +48,11 @@ namespace Behaviours
 
             switch (p_tileType)
             {
-               default:
                case EnvironmentEnum.GRASS:
                   l_prefabName += "Tree";
+                  break;
+               case EnvironmentEnum.BRICKS:
+                  l_prefabName += "Tower";
                   break;
             }
 
@@ -72,6 +70,12 @@ namespace Behaviours
                   break;
                case "Little Tree":
                   l_y = -0.85f;
+                  break;
+               case "Big Tower":
+                  l_y = -0.75f;
+                  break;
+               case "Little Tower":
+                  l_y = -1.62f;
                   break;
                default:
                   l_y = -0.05f;

@@ -50,13 +50,13 @@ namespace Behaviours
          {
             m_tileCount++;
 
-            bool l_hasObstacle = m_tileCount % 3 == 0 && !m_lastTile.HasObstacle();
-
             GameObject l_tile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
 
             m_lastTileType = RandomTileType();
             m_lastLength = RandomLength();
-           
+
+            bool l_hasObstacle = m_tileCount % 3 == 0 && !m_lastTile.HasObstacle() && m_lastTileType != EnvironmentEnum.SAND;
+
             m_lastTile = l_tile.GetComponent<TileBehaviour>();
             m_lastTile.Init(m_lastTileType, m_lastLength, l_hasObstacle);
 
