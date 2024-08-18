@@ -43,7 +43,7 @@ namespace Behaviours
 
          void Update()
          {
-            if(GameStateManager.State == GameStateManager.GameStateEnum.PLAYING)
+            if(GameStateManager.State == GameStateEnum.PLAYING)
             {
                Vector3 l_position = transform.position;
 
