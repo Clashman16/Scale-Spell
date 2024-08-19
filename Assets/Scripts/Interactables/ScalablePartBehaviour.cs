@@ -57,6 +57,7 @@ namespace Behaviours
                   ScalerManager.UpdateColor(Color.red);
                }
 
+               GetComponent<SpriteRenderer>().sortingLayerName = "Obstacles";
                ScalerManager.PreviousMousePosition = l_mousePosition;
                ScalerManager.IsRescaling = true;
             }
