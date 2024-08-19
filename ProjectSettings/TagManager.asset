@@ -41,3 +41,18 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Tiles
+    uniqueID: 943563641
+    locked: 0
+  - name: Obstacles
+    uniqueID: 2476006987
+    locked: 0
+  - name: Items
+    uniqueID: 3465430613
+    locked: 0
+  - name: Scaler
+    uniqueID: 627123747
+    locked: 0
+  - name: UI
+    uniqueID: 18224077
+    locked: 0

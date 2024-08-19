@@ -1097,7 +1097,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 18224077
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &2017638355
@@ -1183,6 +1183,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 945729189}
   - {fileID: 519420032}
-  - {fileID: 8466271315081117469}
   - {fileID: 2017638355}
+  - {fileID: 8466271315081117469}
   - {fileID: 1966837306}
