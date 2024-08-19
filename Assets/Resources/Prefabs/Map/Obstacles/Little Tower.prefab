@@ -73,8 +73,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1818960309
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 443193569, guid: 367cbeff89e9e0746b12c921f41c87f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -155,6 +155,7 @@ GameObject:
   - component: {fileID: 8164041910079891119}
   - component: {fileID: 4638318623920087542}
   - component: {fileID: 5986829461546680246}
+  - component: {fileID: 3559200621150450181}
   m_Layer: 0
   m_Name: Separate Part
   m_TagString: Untagged
@@ -215,8 +216,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1818960309
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 1274849927, guid: 367cbeff89e9e0746b12c921f41c87f3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -348,3 +349,15 @@ PolygonCollider2D:
       - {x: 1.155, y: 2.185}
       - {x: 1.175, y: 2.205}
   m_UseDelaunayMesh: 0
+--- !u!114 &3559200621150450181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8431040408765387082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d2a67d8d5f2f1f4fb7ce36b21e47126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

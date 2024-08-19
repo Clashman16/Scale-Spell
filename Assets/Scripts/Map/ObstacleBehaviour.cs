@@ -1,3 +1,4 @@
+using Behaviours.Interactables;
 using Behaviours.Managers;
 using UnityEngine;
 
@@ -5,7 +6,7 @@ namespace Behaviours
 {
    namespace Map
    {
-      public class ObstacleBehaviour : MonoBehaviour
+      public class ObstacleBehaviour : ScalablePartBehaviour
       {
          private ObstacleType m_obstacleType;
 
@@ -36,7 +37,7 @@ namespace Behaviours
             }
          }
 
-         void Update()
+         private void Update()
          {
             if (GameStateManager.State == GameStateEnum.PLAYING)
             {
@@ -49,7 +50,7 @@ namespace Behaviours
 
                Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
 
-               if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<Renderer>().bounds))
+               if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<SpriteRenderer>().bounds))
                {
                   DestroyImmediate(gameObject);
                }
