@@ -1,5 +1,8 @@
+using System;
 using Behaviours.Managers;
+using Behaviours.Map;
 using UnityEngine;
+using Utils.Callbacks;
 
 namespace Behaviours
 {
@@ -7,7 +10,15 @@ namespace Behaviours
    {
       public class PlayerBehaviour : MonoBehaviour
       {
-         void Update()
+         private bool m_hasShield;
+         private Action m_loose;
+
+         private void Start()
+         {
+            m_hasShield = false;
+            m_loose += CallbacksLibrary.OnPlayerLoose;
+         }
+         private void Update()
          {
             if (GameStateManager.State == GameStateEnum.PLAYING)
             {
@@ -22,6 +33,17 @@ namespace Behaviours
                {
                   GameStateManager.State = GameStateEnum.PAUSED;
                }
+            }
+         }
+         
+         private void OnCollisionEnter2D(Collision2D p_collision)
+         {
+            GameObject l_gameObject = p_collision.gameObject;
+            if (!m_hasShield && (l_gameObject.GetComponent<TileBehaviour>() ||
+                                 l_gameObject.GetComponent<ObstacleBehaviour>() ||
+                                 l_gameObject.GetComponentInParent<ObstacleBehaviour>()))
+            {
+               m_loose.Invoke();
             }
          }
       }

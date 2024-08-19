@@ -24,6 +24,15 @@ namespace Behaviours
             if(m_obstacleType != ObstacleType.INBETWEEN)
             {
                DestroyImmediate(transform.GetChild(0).gameObject);
+               
+               if(m_obstacleType == ObstacleType.HARMLESS)
+               {
+                  DestroyImmediate(GetComponent<Collider2D>());
+               }
+            }
+            else
+            {
+               DestroyImmediate(GetComponent<Collider2D>());
             }
          }
 
