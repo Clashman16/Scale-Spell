@@ -11,6 +11,7 @@ namespace Utils.Callbacks
    {
       public static void OnGameStateChanged(GameStateEnum p_currentGameState)
       {
+         Object.FindObjectOfType<Canvas>().sortingLayerName = "UI";
          GameObject l_pauseMenu = Object.FindObjectsOfType<RectTransform>(true).First(p_transform => p_transform.name == "Pause Menu").gameObject;
          l_pauseMenu.SetActive(p_currentGameState == GameStateEnum.PAUSED);
       }
