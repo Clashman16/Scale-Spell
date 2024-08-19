@@ -33,6 +33,7 @@ namespace Behaviours
             }
             else
             {
+               l_renderer.sprite = Resources.LoadAll<Sprite>(p_spritePath)[(int)ObstacleType.HARMLESS];
                DestroyImmediate(GetComponent<Collider2D>());
             }
          }
