@@ -1,6 +1,7 @@
 using System;
 using Behaviours.Managers;
 using Behaviours.Map;
+using Managers;
 using UnityEngine;
 using Utils.Callbacks;
 
@@ -22,7 +23,7 @@ namespace Behaviours
          {
             if (GameStateManager.State == GameStateEnum.PLAYING)
             {
-               if(Input.GetMouseButton(0))
+               if(Input.GetMouseButton(0) && !ScalerManager.IsRescaling)
                {
                   Vector3 l_position = transform.position;
                   l_position.y += Input.mousePosition.y < Screen.height / 2 ? -0.005f : 0.005f;
