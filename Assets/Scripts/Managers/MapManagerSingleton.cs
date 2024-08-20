@@ -1,34 +1,31 @@
-using Behaviours.Managers.Spawners;
+using Managers.Spawners;
 
-namespace Behaviours
+namespace Managers
 {
-   namespace Managers
-   {
-      public sealed class MapManagerSingleton
-      {
-         private TileSpawner m_tileSpawner;
+    public sealed class MapManagerSingleton
+    {
+        private TileSpawner m_tileSpawner;
          
-         public TileSpawner TileSpawner()
-         {
+        public TileSpawner TileSpawner()
+        {
             return m_tileSpawner;
-         }
+        }
 
-         private MapManagerSingleton()
-         {
+        private MapManagerSingleton()
+        {
             m_tileSpawner = new TileSpawner();
-         }
+        }
 
-         private static MapManagerSingleton m_instance = null;
+        private static MapManagerSingleton m_instance = null;
 
-         public static MapManagerSingleton GetInstance()
-         {
+        public static MapManagerSingleton GetInstance()
+        {
             if (m_instance == null)
             {
-               m_instance = new MapManagerSingleton();
+                m_instance = new MapManagerSingleton();
             }
             return m_instance;
-         }
-      }
-   }
+        }
+    }
 }
 

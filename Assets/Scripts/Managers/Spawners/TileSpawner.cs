@@ -2,52 +2,50 @@ using Behaviours.Map;
 using System;
 using UnityEngine;
 
-namespace Behaviours
+namespace Managers.Spawners
 {
-   namespace Managers.Spawners
-   {
-      public class TileSpawner
-      {
-         private EnvironmentEnum m_lastTileType;
-         private int m_lastLength;
+    public class TileSpawner
+    {
+        private EnvironmentEnum m_lastTileType;
+        private int m_lastLength;
 
-         private TileBehaviour m_lastTile;
+        private TileBehaviour m_lastTile;
 
-         private int m_tileCount;
+        private int m_tileCount;
 
-         private ObstacleSpawner m_obstacleSpawner;
+        private ObstacleSpawner m_obstacleSpawner;
 
-         public TileBehaviour LastTile()
-         {
+        public TileBehaviour LastTile()
+        {
             return m_lastTile;
-         }
+        }
 
-         private float m_timeBeforeSpawn;
-         public Action m_timerFinished;
+        private float m_timeBeforeSpawn;
+        public Action m_timerFinished;
 
-         public float TimeBeforeSpawn
-         {
+        public float TimeBeforeSpawn
+        {
             get { return m_timeBeforeSpawn; }
             set
             {
-               m_timeBeforeSpawn = value;
-               if(m_timeBeforeSpawn <= 0)
-               {
-                  m_timerFinished.Invoke();
-               }
+                m_timeBeforeSpawn = value;
+                if (m_timeBeforeSpawn <= 0)
+                {
+                    m_timerFinished.Invoke();
+                }
             }
-         }
+        }
 
-         public TileSpawner()
-         {
+        public TileSpawner()
+        {
             m_lastTileType = EnvironmentEnum.NONE;
             m_lastLength = 0;
             m_tileCount = 0;
             m_obstacleSpawner = new ObstacleSpawner();
-         }
+        }
 
-         public void Spawn()
-         {
+        public void Spawn()
+        {
             m_tileCount++;
 
             GameObject l_tile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
@@ -55,7 +53,8 @@ namespace Behaviours
             m_lastTileType = RandomTileType();
             m_lastLength = RandomLength();
 
-            bool l_hasObstacle = m_tileCount % 3 == 0 && !m_lastTile.HasObstacle() && m_lastTileType != EnvironmentEnum.SAND;
+            bool l_hasObstacle = m_tileCount % 3 == 0 && !m_lastTile.HasObstacle() &&
+                                 m_lastTileType != EnvironmentEnum.SAND;
 
             m_lastTile = l_tile.GetComponent<TileBehaviour>();
             m_lastTile.Init(m_lastTileType, m_lastLength, l_hasObstacle);
@@ -69,54 +68,54 @@ namespace Behaviours
 
             m_timeBeforeSpawn = l_tileWidth;
 
-            if(l_hasObstacle)
+            if (l_hasObstacle)
             {
-               m_obstacleSpawner.Spawn(l_tile.transform, m_lastTileType);
+                m_obstacleSpawner.Spawn(l_tile.transform, m_lastTileType);
             }
-         }
+        }
 
-         public int RandomLength()
-         {
+        public int RandomLength()
+        {
             int l_length = 0;
 
             int l_trialsCount = 3;
             while (l_trialsCount > 0)
             {
-               l_length = UnityEngine.Random.Range(1, 5);
+                l_length = UnityEngine.Random.Range(1, 5);
 
-               if (l_length != m_lastLength)
-               {
-                  l_trialsCount = 0;
-               }
-               else
-               {
-                  l_trialsCount--;
-               }
+                if (l_length != m_lastLength)
+                {
+                    l_trialsCount = 0;
+                }
+                else
+                {
+                    l_trialsCount--;
+                }
             }
-            return l_length;
-         }
 
-         public EnvironmentEnum RandomTileType()
-         {
+            return l_length;
+        }
+
+        private EnvironmentEnum RandomTileType()
+        {
             int l_envId = 0;
 
             int l_trialsCount = 3;
             while (l_trialsCount > 0)
             {
-               l_envId = UnityEngine.Random.Range(0, 3);
+                l_envId = UnityEngine.Random.Range(0, 3);
 
-               if (l_envId != (int)m_lastTileType)
-               {
-                  l_trialsCount = 0;
-               }
-               else
-               {
-                  l_trialsCount--;
-               }
+                if (l_envId != (int)m_lastTileType)
+                {
+                    l_trialsCount = 0;
+                }
+                else
+                {
+                    l_trialsCount--;
+                }
             }
-            return (EnvironmentEnum)l_envId;
-         }
-      }
-   }
-}
 
+            return (EnvironmentEnum)l_envId;
+        }
+    }
+}

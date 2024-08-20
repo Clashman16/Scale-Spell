@@ -1,5 +1,5 @@
-using Behaviours.Managers;
-using Behaviours.Managers.Spawners;
+using Managers;
+using Managers.Spawners;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils.Callbacks;

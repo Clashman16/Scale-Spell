@@ -1,4 +1,4 @@
-using Behaviours.Managers;
+using Managers;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils.Callbacks;

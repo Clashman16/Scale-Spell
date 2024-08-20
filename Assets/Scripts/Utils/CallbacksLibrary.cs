@@ -1,7 +1,6 @@
-using Behaviours.Managers;
+using Managers;
 using System.Linq;
 using Behaviours.Characters;
-using Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;

@@ -1,6 +1,6 @@
 using Behaviours.Characters;
-using Behaviours.Managers;
-using Behaviours.Managers.Spawners;
+using Managers;
+using Managers.Spawners;
 using UnityEngine;
 
 namespace Behaviours

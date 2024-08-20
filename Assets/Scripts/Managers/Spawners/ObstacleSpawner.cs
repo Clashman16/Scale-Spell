@@ -3,9 +3,7 @@ using System.IO;
 using System.Linq;
 using UnityEngine;
 
-namespace Behaviours
-{
-   namespace Managers.Spawners
+namespace Managers.Spawners
    {
       public class ObstacleSpawner
       {
@@ -121,4 +119,3 @@ namespace Behaviours
          }
       }
    }
-}

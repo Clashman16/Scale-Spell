@@ -1,5 +1,5 @@
 using Behaviours.Interactables;
-using Behaviours.Managers;
+using Managers;
 using UnityEngine;
 
 namespace Behaviours
