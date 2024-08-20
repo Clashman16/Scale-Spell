@@ -66,6 +66,18 @@ namespace Utils.Callbacks
          Object.FindObjectsOfType<TextMeshProUGUI>(true).First(p_label => p_label.name == "Travelled Distance").text =
             (l_scoreManager.TravelledDistance/1000).ToString("F3");
       }
+      
+      public static void OnIncreasePotionUsed(float p_usedQuantity)
+      {
+         ScoreManager l_scoreManager = Object.FindObjectOfType<PlayerBehaviour>(true).GetScoreManager();
+         l_scoreManager.IncreasePotionQuantity -= p_usedQuantity;
+      }
+      
+      public static void OnDecreasePotionUsed(float p_usedQuantity)
+      {
+         ScoreManager l_scoreManager = Object.FindObjectOfType<PlayerBehaviour>(true).GetScoreManager();
+         l_scoreManager.DecreasePotionQuantity -= p_usedQuantity;
+      }
    }
 }
 

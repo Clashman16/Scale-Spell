@@ -1,3 +1,4 @@
+using Behaviours.Characters;
 using Managers;
 using UnityEngine;
 
@@ -7,6 +8,15 @@ namespace Behaviours
    {
       public class ScalablePartBehaviour : MonoBehaviour
       {
+         private float m_originalScale;
+         private float m_previousScale;
+
+         private void Start()
+         {
+            m_originalScale = transform.lossyScale.x;
+            m_previousScale = 1;
+         }
+         
          private void OnMouseDown()
          {
             if(GameStateManager.State == GameStateEnum.PLAYING)
@@ -48,12 +58,22 @@ namespace Behaviours
                   {
                      transform.localScale -= new Vector3(0.01f, 0.01f, 0);
                      ScalerManager.UpdateColor(Color.blue);
+
+                     float l_actualScale = transform.lossyScale.x * 100 / m_originalScale;
+                     float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
+                     FindObjectOfType<PlayerBehaviour>().GetScoreManager().OnDecreasePotionUsed().Invoke(l_difference);
+                     m_previousScale = l_actualScale;
                   }
                }
                else if (l_mousePosition.y > ScalerManager.PreviousMousePosition.y)
                {
                   transform.localScale += new Vector3(0.01f, 0.01f, 0);
                   ScalerManager.UpdateColor(Color.red);
+                  
+                  float l_actualScale = transform.lossyScale.x * 100 / m_originalScale;
+                  float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
+                  FindObjectOfType<PlayerBehaviour>().GetScoreManager().OnIncreasePotionUsed().Invoke(l_difference);
+                  m_previousScale = l_actualScale;
                }
 
                GetComponent<SpriteRenderer>().sortingLayerName = "Obstacles";

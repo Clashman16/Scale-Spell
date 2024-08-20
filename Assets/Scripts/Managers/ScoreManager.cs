@@ -20,6 +20,13 @@ namespace Managers
         }
         
         private float m_increasePotionQuantity;
+        
+        private Action<float> m_onIncreasePotionUsed;
+        public Action<float> OnIncreasePotionUsed()
+        {
+            return m_onIncreasePotionUsed;
+        }
+        
         public float IncreasePotionQuantity
         {
             get { return m_increasePotionQuantity; }
@@ -27,6 +34,13 @@ namespace Managers
         }
         
         private float m_decreasePotionQuantity;
+        
+        private Action<float> m_onDecreasePotionUsed;
+        public Action<float> OnDecreasePotionUsed()
+        {
+            return m_onDecreasePotionUsed;
+        }
+        
         public float DecreasePotionQuantity
         {
             get { return m_decreasePotionQuantity; }
@@ -39,6 +53,8 @@ namespace Managers
             m_increasePotionQuantity = 100;
             m_decreasePotionQuantity = 100;
             m_onTravelled += CallbacksLibrary.OnMeterTravelled;
+            m_onIncreasePotionUsed += CallbacksLibrary.OnIncreasePotionUsed;
+            m_onDecreasePotionUsed += CallbacksLibrary.OnDecreasePotionUsed;
         }
     }
 }
