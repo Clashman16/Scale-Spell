@@ -37,12 +37,18 @@ namespace Managers
 
       public static void EraseScaler()
       {
-         Object.DestroyImmediate(m_scalerGameObject);
+         if(m_scalerGameObject != null)
+         {
+            Object.DestroyImmediate(m_scalerGameObject);
+         }
       }
 
       public static void UpdateColor(Color p_color)
       {
-         m_scalerGameObject.GetComponent<LineRenderer>().material.color = p_color;
+         if(m_scalerGameObject != null)
+         {
+            m_scalerGameObject.GetComponent<LineRenderer>().material.color = p_color;
+         }
       }
    }
 }

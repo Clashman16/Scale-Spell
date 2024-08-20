@@ -50,8 +50,8 @@ namespace Managers
         private ScoreManagerSingleton()
         {
             m_travelledDistance = 0;
-            m_increasePotionQuantity = 100;
-            m_decreasePotionQuantity = 100;
+            m_increasePotionQuantity = 1;
+            m_decreasePotionQuantity = 1;
             m_onTravelled += CallbacksLibrary.OnMeterTravelled;
             m_onIncreasePotionUsed += CallbacksLibrary.OnIncreasePotionUsed;
             m_onDecreasePotionUsed += CallbacksLibrary.OnDecreasePotionUsed;

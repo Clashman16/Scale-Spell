@@ -36,6 +36,73 @@ namespace Behaviours
                l_renderer.sprite = Resources.LoadAll<Sprite>(p_spritePath)[(int)ObstacleType.HARMLESS];
                DestroyImmediate(GetComponent<Collider2D>());
             }
+
+            DestroyRulers();
+            InitRulers();
+         }
+
+         private void InitRulers()
+         {
+            RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
+            for (int l_i = 0; l_i < l_rulers.Length; l_i++)
+            {
+               l_rulers[l_i].Init(ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < ScoreManagerSingleton.GetInstance().DecreasePotionQuantity);
+            }
+         }
+
+         private void DestroyRulers()
+         {
+            if ((ScoreManagerSingleton.GetInstance().IncreasePotionQuantity >= 0.5 &&
+                 ScoreManagerSingleton.GetInstance().DecreasePotionQuantity >= 0.5) ||
+                m_obstacleType == ObstacleType.HARMFUL)
+            {
+               RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
+               for (int l_i = 0; l_i < l_rulers.Length; l_i++)
+               {
+                  DestroyImmediate(l_rulers[l_i].gameObject);
+               }
+            }
+            else
+            {
+               if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < 0.5)
+               {
+                  RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
+                  if(l_rulers != null && l_rulers.Length > 0)
+                  {
+                     int l_chance = Random.Range(0, 10);
+                     if (l_chance >= 2 && l_chance <= 6)
+                     {
+                        DestroyImmediate(l_rulers[Random.Range(0, l_rulers.Length)].gameObject);
+                     }
+                     else
+                     {
+                        for (int l_i = 0; l_i < l_rulers.Length; l_i++)
+                        {
+                           DestroyImmediate(l_rulers[l_i].gameObject);
+                        }
+                     }
+                  }
+               }
+               if (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity < 0.5)
+               {
+                  RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
+                  if (l_rulers != null && l_rulers.Length > 0)
+                  {
+                     int l_chance = Random.Range(0, 10);
+                     if (l_chance >= 2 && l_chance <= 6)
+                     {
+                        DestroyImmediate(l_rulers[Random.Range(0, l_rulers.Length)].gameObject);
+                     }
+                     else
+                     {
+                        for (int l_i = 0; l_i < l_rulers.Length; l_i++)
+                        {
+                           DestroyImmediate(l_rulers[l_i].gameObject);
+                        }
+                     }
+                  }
+               }
+            }
          }
 
          private void Update()

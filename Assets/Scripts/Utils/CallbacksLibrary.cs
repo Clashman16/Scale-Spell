@@ -70,12 +70,24 @@ namespace Utils.Callbacks
       {
          ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
          l_scoreManager.IncreasePotionQuantity -= p_usedQuantity;
+
+         if(l_scoreManager.IncreasePotionQuantity <= 0)
+         {
+            l_scoreManager.IncreasePotionQuantity = 0;
+            ScalerManager.EraseScaler();
+         }
       }
       
       public static void OnDecreasePotionUsed(float p_usedQuantity)
       {
          ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
          l_scoreManager.DecreasePotionQuantity -= p_usedQuantity;
+
+         if (l_scoreManager.DecreasePotionQuantity <= 0)
+         {
+            l_scoreManager.DecreasePotionQuantity = 0;
+            ScalerManager.EraseScaler();
+         }
       }
    }
 }

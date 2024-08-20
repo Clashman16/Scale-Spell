@@ -59,7 +59,7 @@ namespace Managers.Spawners
 
          private float GetYCoordinate(string p_prefabName)
          {
-            float l_y = 0;
+            float l_y;
 
             switch (p_prefabName)
             {
@@ -82,40 +82,61 @@ namespace Managers.Spawners
             return l_y;
          }
 
-         private ObstacleType GetObstacleType()
+      private ObstacleType GetObstacleType()
+      {
+         ObstacleType l_obstacleType;
+
+         if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < 0.5 ||
+                 ScoreManagerSingleton.GetInstance().DecreasePotionQuantity < 0.5)
+         {
+            if(Random.Range(0, 10) >= 5)
+            {
+               l_obstacleType = (ObstacleType)Random.Range(1, 3);
+            }
+            else
+            {
+               l_obstacleType = ObstacleType.HARMFUL;
+            }
+         }
+         else
          {
             ObstacleBehaviour[] l_obstacles = Object.FindObjectsOfType<ObstacleBehaviour>();
             int[] l_typesCount = { 0, 0, 0 };
 
-            foreach(ObstacleBehaviour l_obstacle in l_obstacles)
+            foreach (ObstacleBehaviour l_obstacle in l_obstacles)
             {
                l_typesCount[(int)l_obstacle.GetObstacleType()] += 1;
             }
 
             if (l_typesCount[0] == l_typesCount[1] && l_typesCount[1] == l_typesCount[2])
             {
-               return (ObstacleType) Random.Range(0, 3);
+               l_obstacleType = (ObstacleType)Random.Range(0, 3);
             }
-            else if(l_typesCount[0] == l_typesCount[1] && l_typesCount[2] > l_typesCount[1])
+            else if (l_typesCount[0] == l_typesCount[1] && l_typesCount[2] > l_typesCount[1])
             {
-               return (ObstacleType)Random.Range(0, 2);
+               l_obstacleType = (ObstacleType)Random.Range(0, 2);
             }
             else if (l_typesCount[1] == l_typesCount[2] && l_typesCount[0] > l_typesCount[1])
             {
-               return (ObstacleType)Random.Range(1, 3);
+               l_obstacleType = (ObstacleType)Random.Range(1, 3);
             }
             else if (l_typesCount[0] == l_typesCount[2] && l_typesCount[1] > l_typesCount[0])
             {
                int l_randomValue = Random.Range(0, 2);
-               if(l_randomValue == 1)
+               if (l_randomValue == 1)
                {
                   l_randomValue = 2;
                }
 
-               return (ObstacleType)l_randomValue;
+               l_obstacleType = (ObstacleType)l_randomValue;
             }
-
-            return (ObstacleType) l_typesCount.Min();
+            else
+            {
+               l_obstacleType = (ObstacleType)l_typesCount.Min();
+            }
          }
+
+         return l_obstacleType;
       }
    }
+}

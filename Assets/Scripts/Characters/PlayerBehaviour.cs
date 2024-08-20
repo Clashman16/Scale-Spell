@@ -1,4 +1,5 @@
 using System;
+using Behaviours.Interactables;
 using Behaviours.Map;
 using Managers;
 using UnityEngine;
@@ -39,7 +40,8 @@ namespace Behaviours
          private void OnCollisionEnter2D(Collision2D p_collision)
          {
             GameObject l_gameObject = p_collision.gameObject;
-            if (!m_hasShield && (l_gameObject.GetComponent<TileBehaviour>() ||
+            if (!m_hasShield && !l_gameObject.GetComponent<RulerBehaviour>() &&
+                                 (l_gameObject.GetComponent<TileBehaviour>() ||
                                  l_gameObject.GetComponent<ObstacleBehaviour>() ||
                                  l_gameObject.GetComponentInParent<ObstacleBehaviour>()))
             {

@@ -23,11 +23,11 @@ namespace Behaviours
                 {
                     if(m_isIncreaseMagic)
                     {
-                        ScoreManagerSingleton.GetInstance().OnIncreasePotionUsed.Invoke(-0.05f);
+                        ScoreManagerSingleton.GetInstance().OnIncreasePotionUsed.Invoke(-0.3f);
                     }
                     else
                     {
-                        ScoreManagerSingleton.GetInstance().OnDecreasePotionUsed.Invoke(-0.05f);
+                        ScoreManagerSingleton.GetInstance().OnDecreasePotionUsed.Invoke(-0.3f);
                     }
                 }
 

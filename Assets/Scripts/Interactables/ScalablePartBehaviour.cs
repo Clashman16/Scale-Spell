@@ -18,7 +18,7 @@ namespace Behaviours
          
          private void OnMouseDown()
          {
-            if(GameStateManager.State == GameStateEnum.PLAYING)
+            if (GameStateManager.State == GameStateEnum.PLAYING && (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0 || ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0))
             {
                ScalerManager.DrawScaler(GetComponent<SpriteRenderer>());
                ScalerManager.PreviousMousePosition = Input.mousePosition;
@@ -51,25 +51,25 @@ namespace Behaviours
             {
                Vector3 l_mousePosition = Input.mousePosition;
 
-               if (l_mousePosition.y < ScalerManager.PreviousMousePosition.y)
+               if (l_mousePosition.y < ScalerManager.PreviousMousePosition.y && ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0)
                {
                   if(transform.localScale.x > 0.001f && transform.localScale.y > 0.001f && transform.localScale.z > 0.001f)
                   {
                      transform.localScale -= new Vector3(0.01f, 0.01f, 0);
                      ScalerManager.UpdateColor(Color.blue);
 
-                     float l_actualScale = transform.lossyScale.x * 100 / m_originalScale;
+                     float l_actualScale = transform.lossyScale.x / m_originalScale;
                      float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
                      ScoreManagerSingleton.GetInstance().OnDecreasePotionUsed.Invoke(l_difference);
                      m_previousScale = l_actualScale;
                   }
                }
-               else if (l_mousePosition.y > ScalerManager.PreviousMousePosition.y)
+               else if (l_mousePosition.y > ScalerManager.PreviousMousePosition.y && ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0)
                {
                   transform.localScale += new Vector3(0.01f, 0.01f, 0);
                   ScalerManager.UpdateColor(Color.red);
                   
-                  float l_actualScale = transform.lossyScale.x * 100 / m_originalScale;
+                  float l_actualScale = transform.lossyScale.x / m_originalScale;
                   float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
                   ScoreManagerSingleton.GetInstance().OnIncreasePotionUsed.Invoke(l_difference);
                   m_previousScale = l_actualScale;
