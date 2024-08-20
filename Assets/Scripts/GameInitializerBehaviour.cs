@@ -5,18 +5,29 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utils.Callbacks;
 
-public class GameInitializerBehaviour : MonoBehaviour
+namespace Behaviours
 {
-    void Start()
+    public class GameInitializerBehaviour : MonoBehaviour
     {
-      GameStateManager.m_gameStateChanged += CallbacksLibrary.OnGameStateChanged;
+        void Start()
+        {
+            TileSpawner l_tileSpawner = MapManagerSingleton.GetInstance().TileSpawner();
+            l_tileSpawner.m_timerFinished += CallbacksLibrary.OnTimeSpawnerTimerFinished;
+            l_tileSpawner.TimeBeforeSpawn = 0;
 
-      TileSpawner l_tileSpawner = MapManagerSingleton.GetInstance().TileSpawner();
-      l_tileSpawner.m_timerFinished += CallbacksLibrary.OnTimeSpawnerTimerFinished;
-      l_tileSpawner.TimeBeforeSpawn = 0;
+            foreach (Button l_button in FindObjectsOfType<Button>(true))
+            {
+                if (l_button.name == "Resume Button")
+                {
+                    l_button.onClick.AddListener(CallbacksLibrary.Resume);
+                }
+                else
+                {
+                    l_button.onClick.AddListener(CallbacksLibrary.GoToTitlescreen);
+                }
+            }
 
-      FindObjectsOfType<Button>(true).First(p_button => p_button.name == "Resume Button").onClick.AddListener(CallbacksLibrary.Resume);
-
-      DestroyImmediate(gameObject);
-   }
+            DestroyImmediate(gameObject);
+        }
+    }
 }

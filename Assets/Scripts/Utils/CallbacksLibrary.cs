@@ -11,9 +11,13 @@ namespace Utils.Callbacks
    {
       public static void OnGameStateChanged(GameStateEnum p_currentGameState)
       {
-         Object.FindObjectOfType<Canvas>().sortingLayerName = "UI";
-         GameObject l_pauseMenu = Object.FindObjectsOfType<RectTransform>(true).First(p_transform => p_transform.name == "Pause Menu").gameObject;
-         l_pauseMenu.SetActive(p_currentGameState == GameStateEnum.PAUSED);
+         RectTransform l_pauseMenuTrf = Object.FindObjectsOfType<RectTransform>(true)
+            .FirstOrDefault(p_transform => p_transform.name == "Pause Menu");
+         if (l_pauseMenuTrf != null)
+         {
+            Object.FindObjectOfType<Canvas>().sortingLayerName = "UI";
+            l_pauseMenuTrf.gameObject.SetActive(p_currentGameState == GameStateEnum.PAUSED);
+         }
       }
 
       public static void Resume()
@@ -23,8 +27,14 @@ namespace Utils.Callbacks
 
       public static void Restart()
       {
-         SceneManager.LoadScene(SceneManager.GetActiveScene().name, LoadSceneMode.Single);
+         SceneManager.LoadScene("Level", LoadSceneMode.Single);
          GameStateManager.State = GameStateEnum.PLAYING;
+      }
+
+      public static void GoToTitlescreen()
+      {
+         SceneManager.LoadScene("Titlescreen", LoadSceneMode.Single);
+         GameStateManager.State = GameStateEnum.PAUSED;
       }
 
       public static void OnTimeSpawnerTimerFinished()
