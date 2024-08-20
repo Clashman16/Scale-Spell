@@ -1,5 +1,7 @@
 using Behaviours.Managers;
 using System.Linq;
+using Behaviours.Characters;
+using Managers;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -47,7 +49,8 @@ namespace Utils.Callbacks
          GameStateManager.State = GameStateEnum.PAUSED;
                
          TextMeshProUGUI l_menuTitle = Object.FindObjectsOfType<TextMeshProUGUI>(true).First(p_button => p_button.name == "Menu Title");
-         l_menuTitle.text = "You loose!";
+         float l_distance = Object.FindObjectOfType<PlayerBehaviour>().GetScoreManager().TravelledDistance;
+         l_menuTitle.text = string.Concat((l_distance/1000).ToString("F3"), " m");
          l_menuTitle.color = Color.red;
                
          Button p_resumeButton = Object.FindObjectsOfType<Button>(true).First(p_button => p_button.name == "Resume Button");
@@ -55,6 +58,14 @@ namespace Utils.Callbacks
          p_resumeButton.GetComponentInChildren<TextMeshProUGUI>().text = "Try Again";
          p_resumeButton.onClick.RemoveListener(Resume);
          p_resumeButton.onClick.AddListener(Restart);
+      }
+
+      public static void OnMeterTravelled(float p_distance)
+      {
+         ScoreManager l_scoreManager = Object.FindObjectOfType<PlayerBehaviour>(true).GetScoreManager();
+         l_scoreManager.TravelledDistance += p_distance;
+         Object.FindObjectsOfType<TextMeshProUGUI>(true).First(p_label => p_label.name == "Travelled Distance").text =
+            (l_scoreManager.TravelledDistance/1000).ToString("F3");
       }
    }
 }

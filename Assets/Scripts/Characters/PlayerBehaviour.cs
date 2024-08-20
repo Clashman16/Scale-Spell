@@ -13,11 +13,13 @@ namespace Behaviours
       {
          private bool m_hasShield;
          private Action m_loose;
+         private ScoreManager m_scoreManager;
 
          private void Start()
          {
             m_hasShield = false;
             m_loose += CallbacksLibrary.OnPlayerLoose;
+            m_scoreManager = new ScoreManager();
          }
          private void Update()
          {
@@ -47,7 +49,11 @@ namespace Behaviours
                m_loose.Invoke();
             }
          }
-      }
 
+         public ScoreManager GetScoreManager()
+         {
+            return m_scoreManager;
+         }
+      }
    }
 }

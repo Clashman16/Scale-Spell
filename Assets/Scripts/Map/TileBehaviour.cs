@@ -1,3 +1,4 @@
+using Behaviours.Characters;
 using Behaviours.Managers;
 using Behaviours.Managers.Spawners;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace Behaviours
 
          public void Init(EnvironmentEnum p_environnement, int p_length, bool p_hasObstacle = false)
          {
-            p_hasObstacle = m_hasObstacle;
+            m_hasObstacle = p_hasObstacle;
 
             ChangeSprite(p_environnement);
             Resize(p_length);
@@ -68,9 +69,17 @@ namespace Behaviours
                l_position.x -= l_distance;
                transform.position = l_position;
 
-               Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+               Bounds l_bounds = GetComponent<SpriteRenderer>().bounds;
 
-               if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<Renderer>().bounds))
+               PlayerBehaviour l_player = FindObjectOfType<PlayerBehaviour>();
+               if (l_player.GetComponent<SpriteRenderer>().bounds.min.x > l_bounds.min.x)
+               {
+                  float l_travelledDistance = l_player.GetComponent<SpriteRenderer>().bounds.min.x - l_bounds.min.x;
+                  l_player.GetScoreManager().OnTravelled().Invoke(l_travelledDistance );
+               }
+
+               Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+               if (!GeometryUtility.TestPlanesAABB(l_planes, l_bounds))
                {
                   DestroyImmediate(gameObject);
                }
