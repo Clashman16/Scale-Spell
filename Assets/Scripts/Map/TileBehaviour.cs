@@ -75,7 +75,7 @@ namespace Behaviours
                if (l_player.GetComponent<SpriteRenderer>().bounds.min.x > l_bounds.min.x)
                {
                   float l_travelledDistance = l_player.GetComponent<SpriteRenderer>().bounds.min.x - l_bounds.min.x;
-                  l_player.GetScoreManager().OnTravelled().Invoke(l_travelledDistance );
+                  ScoreManagerSingleton.GetInstance().OnTravelled().Invoke(l_travelledDistance );
                }
 
                Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);

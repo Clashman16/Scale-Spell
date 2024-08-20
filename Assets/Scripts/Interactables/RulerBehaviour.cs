@@ -1,4 +1,5 @@
 using Behaviours.Characters;
+using Managers;
 using UnityEngine;
 
 namespace Behaviours
@@ -22,11 +23,11 @@ namespace Behaviours
                 {
                     if(m_isIncreaseMagic)
                     {
-                        l_player.GetScoreManager().OnIncreasePotionUsed().Invoke(-0.05f);
+                        ScoreManagerSingleton.GetInstance().OnIncreasePotionUsed.Invoke(-0.05f);
                     }
                     else
                     {
-                        l_player.GetScoreManager().OnDecreasePotionUsed().Invoke(-0.05f);
+                        ScoreManagerSingleton.GetInstance().OnDecreasePotionUsed.Invoke(-0.05f);
                     }
                 }
 

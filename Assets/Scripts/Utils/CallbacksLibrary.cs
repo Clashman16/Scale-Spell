@@ -1,6 +1,5 @@
 using Managers;
 using System.Linq;
-using Behaviours.Characters;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -48,7 +47,7 @@ namespace Utils.Callbacks
          GameStateManager.State = GameStateEnum.PAUSED;
                
          TextMeshProUGUI l_menuTitle = Object.FindObjectsOfType<TextMeshProUGUI>(true).First(p_button => p_button.name == "Menu Title");
-         float l_distance = Object.FindObjectOfType<PlayerBehaviour>().GetScoreManager().TravelledDistance;
+         float l_distance = ScoreManagerSingleton.GetInstance().TravelledDistance;
          l_menuTitle.text = string.Concat((l_distance/1000).ToString("F3"), " m");
          l_menuTitle.color = Color.red;
                
@@ -61,7 +60,7 @@ namespace Utils.Callbacks
 
       public static void OnMeterTravelled(float p_distance)
       {
-         ScoreManager l_scoreManager = Object.FindObjectOfType<PlayerBehaviour>(true).GetScoreManager();
+         ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
          l_scoreManager.TravelledDistance += p_distance;
          Object.FindObjectsOfType<TextMeshProUGUI>(true).First(p_label => p_label.name == "Travelled Distance").text =
             (l_scoreManager.TravelledDistance/1000).ToString("F3");
@@ -69,13 +68,13 @@ namespace Utils.Callbacks
       
       public static void OnIncreasePotionUsed(float p_usedQuantity)
       {
-         ScoreManager l_scoreManager = Object.FindObjectOfType<PlayerBehaviour>(true).GetScoreManager();
+         ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
          l_scoreManager.IncreasePotionQuantity -= p_usedQuantity;
       }
       
       public static void OnDecreasePotionUsed(float p_usedQuantity)
       {
-         ScoreManager l_scoreManager = Object.FindObjectOfType<PlayerBehaviour>(true).GetScoreManager();
+         ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
          l_scoreManager.DecreasePotionQuantity -= p_usedQuantity;
       }
    }

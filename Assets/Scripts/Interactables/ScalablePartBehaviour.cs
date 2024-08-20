@@ -1,4 +1,3 @@
-using Behaviours.Characters;
 using Managers;
 using UnityEngine;
 
@@ -61,7 +60,7 @@ namespace Behaviours
 
                      float l_actualScale = transform.lossyScale.x * 100 / m_originalScale;
                      float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
-                     FindObjectOfType<PlayerBehaviour>().GetScoreManager().OnDecreasePotionUsed().Invoke(l_difference);
+                     ScoreManagerSingleton.GetInstance().OnDecreasePotionUsed.Invoke(l_difference);
                      m_previousScale = l_actualScale;
                   }
                }
@@ -72,7 +71,7 @@ namespace Behaviours
                   
                   float l_actualScale = transform.lossyScale.x * 100 / m_originalScale;
                   float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
-                  FindObjectOfType<PlayerBehaviour>().GetScoreManager().OnIncreasePotionUsed().Invoke(l_difference);
+                  ScoreManagerSingleton.GetInstance().OnIncreasePotionUsed.Invoke(l_difference);
                   m_previousScale = l_actualScale;
                }
 

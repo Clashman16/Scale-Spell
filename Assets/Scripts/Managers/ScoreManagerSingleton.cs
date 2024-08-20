@@ -3,7 +3,7 @@ using Utils.Callbacks;
 
 namespace Managers
 {
-    public class ScoreManager
+    public class ScoreManagerSingleton
     {
         private float m_travelledDistance;
         
@@ -22,9 +22,9 @@ namespace Managers
         private float m_increasePotionQuantity;
         
         private Action<float> m_onIncreasePotionUsed;
-        public Action<float> OnIncreasePotionUsed()
+        public Action<float> OnIncreasePotionUsed
         {
-            return m_onIncreasePotionUsed;
+            get{return m_onIncreasePotionUsed;}
         }
         
         public float IncreasePotionQuantity
@@ -36,9 +36,9 @@ namespace Managers
         private float m_decreasePotionQuantity;
         
         private Action<float> m_onDecreasePotionUsed;
-        public Action<float> OnDecreasePotionUsed()
+        public Action<float> OnDecreasePotionUsed
         {
-            return m_onDecreasePotionUsed;
+            get{return m_onDecreasePotionUsed;}
         }
         
         public float DecreasePotionQuantity
@@ -47,7 +47,7 @@ namespace Managers
             set { m_decreasePotionQuantity = value; }
         }
 
-        public ScoreManager()
+        private ScoreManagerSingleton()
         {
             m_travelledDistance = 0;
             m_increasePotionQuantity = 100;
@@ -55,6 +55,17 @@ namespace Managers
             m_onTravelled += CallbacksLibrary.OnMeterTravelled;
             m_onIncreasePotionUsed += CallbacksLibrary.OnIncreasePotionUsed;
             m_onDecreasePotionUsed += CallbacksLibrary.OnDecreasePotionUsed;
+        }
+
+        private static ScoreManagerSingleton m_instance = null;
+
+        public static ScoreManagerSingleton GetInstance()
+        {
+            if (m_instance == null)
+            {
+                m_instance = new ScoreManagerSingleton();
+            }
+            return m_instance;
         }
     }
 }
