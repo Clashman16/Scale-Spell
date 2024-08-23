@@ -56,6 +56,8 @@ namespace Utils.Callbacks
          p_resumeButton.GetComponentInChildren<TextMeshProUGUI>().text = "Try Again";
          p_resumeButton.onClick.RemoveListener(Resume);
          p_resumeButton.onClick.AddListener(Restart);
+
+         ScoreManagerSingleton.Reset();
       }
 
       public static void OnMeterTravelled(float p_distance)
