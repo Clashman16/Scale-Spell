@@ -53,7 +53,7 @@ namespace Managers.Spawners
             m_lastTileType = RandomTileType();
             m_lastLength = RandomLength();
 
-            bool l_hasObstacle = m_tileCount % 3 == 0 && !m_lastTile.HasObstacle() &&
+            bool l_hasObstacle = (m_tileCount % 3 == 0 || m_tileCount % 5 == 0 ) && !m_lastTile.HasObstacle() &&
                                  m_lastTileType != EnvironmentEnum.SAND;
 
             m_lastTile = l_tile.GetComponent<TileBehaviour>();
