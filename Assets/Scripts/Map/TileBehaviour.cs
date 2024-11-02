@@ -57,7 +57,7 @@ namespace Behaviours
             {
                Vector3 l_position = transform.position;
 
-               float l_distance = 0.005f;
+               float l_distance = 0.01f;
 
                TileSpawner l_tileSpawner = MapManagerSingleton.GetInstance().TileSpawner();
 

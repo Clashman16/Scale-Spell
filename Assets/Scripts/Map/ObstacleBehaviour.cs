@@ -64,7 +64,7 @@ namespace Behaviours
             }
             else
             {
-               if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < 0.5)
+               if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0.7)
                {
                   RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
                   if(l_rulers != null && l_rulers.Length > 0)
@@ -83,7 +83,7 @@ namespace Behaviours
                      }
                   }
                }
-               if (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity < 0.5)
+               if (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0.7)
                {
                   RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
                   if (l_rulers != null && l_rulers.Length > 0)
@@ -111,7 +111,7 @@ namespace Behaviours
             {
                Vector3 l_position = transform.position;
 
-               float l_distance = 0.005f;
+               float l_distance = 0.01f;
 
                l_position.x -= l_distance;
                transform.position = l_position;
