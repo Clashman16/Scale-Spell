@@ -1,3 +1,4 @@
+using Behaviours.UI;
 using Managers;
 using System.Linq;
 using TMPro;
@@ -78,6 +79,8 @@ namespace Utils.Callbacks
             l_scoreManager.IncreasePotionQuantity = 0;
             ScalerManager.EraseScaler();
          }
+
+         Object.FindObjectsOfType<PotionIndicatorBehaviour>(true).First(p_indicator => p_indicator.name.Contains("Red")).UpdateSprite(true);
       }
       
       public static void OnDecreasePotionUsed(float p_usedQuantity)
@@ -90,6 +93,8 @@ namespace Utils.Callbacks
             l_scoreManager.DecreasePotionQuantity = 0;
             ScalerManager.EraseScaler();
          }
+
+         Object.FindObjectsOfType<PotionIndicatorBehaviour>(true).First(p_indicator => p_indicator.name.Contains("Blue")).UpdateSprite(false);
       }
    }
 }

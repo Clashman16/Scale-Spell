@@ -1,3 +1,4 @@
+using Behaviours.UI;
 using Managers;
 using Managers.Spawners;
 using UnityEngine;
@@ -26,7 +27,12 @@ namespace Behaviours
                 }
             }
 
-            DestroyImmediate(gameObject);
+         foreach (PotionIndicatorBehaviour l_potionIndicator in FindObjectsOfType<PotionIndicatorBehaviour>(true))
+         {
+            l_potionIndicator.Init(l_potionIndicator.name.Contains("Red") ? true : false);
+         }
+
+         DestroyImmediate(gameObject);
         }
     }
 }
