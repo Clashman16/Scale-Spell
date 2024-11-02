@@ -26,6 +26,11 @@ namespace Behaviours
             ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
             int l_index = Mathf.RoundToInt(10*(p_increasePotion ? l_scoreManager.IncreasePotionQuantity : l_scoreManager.DecreasePotionQuantity));
 
+            if(l_index > 10)
+            {
+               l_index = 10;
+            }
+
             m_image.sprite = m_spritesheet[l_index];
          }
       }
