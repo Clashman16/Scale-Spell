@@ -13,26 +13,44 @@ namespace Behaviours
       {
          private bool m_hasShield;
          private Action m_loose;
+         private bool m_isIntro;
 
          private void Start()
          {
             m_hasShield = false;
+            m_isIntro = true;
             m_loose += CallbacksLibrary.OnPlayerLoose;
          }
          private void Update()
          {
-            if (GameStateManager.State == GameStateEnum.PLAYING)
+            if(m_isIntro)
             {
-               if(Input.GetMouseButton(0) && !ScalerManager.IsRescaling)
+               Vector3 l_position = transform.position;
+               l_position.y -= 0.01f;
+               
+               if(l_position.y <= 0)
                {
-                  Vector3 l_position = transform.position;
-                  l_position.y += Input.mousePosition.y < Screen.height / 2 ? -0.01f : 0.01f;
-                  transform.position = l_position;
+                  m_isIntro = false;
+                  l_position.y = 0;
                }
 
-               if (Input.GetMouseButtonDown(1))
+               transform.position = l_position;
+            }
+            else
+            {
+               if (GameStateManager.State == GameStateEnum.PLAYING)
                {
-                  GameStateManager.State = GameStateEnum.PAUSED;
+                  if (Input.GetMouseButton(0) && !ScalerManager.IsRescaling)
+                  {
+                     Vector3 l_position = transform.position;
+                     l_position.y += Input.mousePosition.y < Screen.height / 2 ? -0.01f : 0.01f;
+                     transform.position = l_position;
+                  }
+
+                  if (Input.GetMouseButtonDown(1))
+                  {
+                     GameStateManager.State = GameStateEnum.PAUSED;
+                  }
                }
             }
          }
