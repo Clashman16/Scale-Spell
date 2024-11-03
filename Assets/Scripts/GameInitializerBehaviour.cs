@@ -15,15 +15,15 @@ namespace Behaviours
             l_tileSpawner.m_timerFinished += CallbacksLibrary.OnTimeSpawnerTimerFinished;
             l_tileSpawner.TimeBeforeSpawn = 0;
 
-            foreach (Button l_button in FindObjectsOfType<Button>(true))
+            foreach (ScalabbleButtonBehaviour l_button in FindObjectsOfType<ScalabbleButtonBehaviour>(true))
             {
                 if (l_button.name == "Resume Button")
                 {
-                    l_button.onClick.AddListener(CallbacksLibrary.Resume);
+                    l_button.AddListener(CallbacksLibrary.Resume);
                 }
                 else
                 {
-                    l_button.onClick.AddListener(CallbacksLibrary.GoToTitlescreen);
+                    l_button.AddListener(CallbacksLibrary.GoToTitlescreen);
                 }
             }
 

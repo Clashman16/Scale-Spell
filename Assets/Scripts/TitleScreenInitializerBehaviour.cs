@@ -1,25 +1,25 @@
+using Behaviours.UI;
 using Managers;
 using UnityEngine;
-using UnityEngine.UI;
 using Utils.Callbacks;
 
 namespace Behaviours
 {
-    public class TitleScreenInitializerBehaviour : MonoBehaviour
-    {
-        void Start()
-        {
-            GameStateManager.m_gameStateChanged += CallbacksLibrary.OnGameStateChanged;
+   public class TitleScreenInitializerBehaviour : MonoBehaviour
+   {
+      void Start()
+      {
+         GameStateManager.m_gameStateChanged += CallbacksLibrary.OnGameStateChanged;
 
-            foreach (Button l_button in FindObjectsOfType<Button>(true))
-            {
-                if (l_button.name == "Play Button")
-                {
-                    l_button.onClick.AddListener(CallbacksLibrary.Restart);
-                }
+         foreach (ScalabbleButtonBehaviour l_button in FindObjectsOfType<ScalabbleButtonBehaviour>(true))
+         {
+            if (l_button.name == "Play Button")
+            {;
+               l_button.AddListener(CallbacksLibrary.Restart);
             }
+         }
 
-            DestroyImmediate(gameObject);
-        }
-    }
+         Destroy(gameObject);
+      }
+   }
 }

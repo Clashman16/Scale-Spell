@@ -51,12 +51,12 @@ namespace Utils.Callbacks
          float l_distance = ScoreManagerSingleton.GetInstance().TravelledDistance;
          l_menuTitle.text = string.Concat((l_distance/1000).ToString("F3"), " m");
          l_menuTitle.color = Color.red;
-               
-         Button p_resumeButton = Object.FindObjectsOfType<Button>(true).First(p_button => p_button.name == "Resume Button");
+
+         ScalabbleButtonBehaviour p_resumeButton = Object.FindObjectsOfType<ScalabbleButtonBehaviour>(true).First(p_button => p_button.name == "Resume Button");
 
          p_resumeButton.GetComponentInChildren<TextMeshProUGUI>().text = "Try Again";
-         p_resumeButton.onClick.RemoveListener(Resume);
-         p_resumeButton.onClick.AddListener(Restart);
+         p_resumeButton.RemoveListener(Resume);
+         p_resumeButton.AddListener(Restart);
 
          ScoreManagerSingleton.Reset();
       }
