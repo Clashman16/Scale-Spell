@@ -43,7 +43,13 @@ namespace Behaviours
                   if (Input.GetMouseButton(0) && !ScalerManager.IsRescaling)
                   {
                      Vector3 l_position = transform.position;
-                     l_position.y += Input.mousePosition.y < Screen.height / 2 ? -0.01f : 0.01f;
+                     l_position.y += 0.01f;
+                     transform.position = l_position;
+                  }
+                  else
+                  {
+                     Vector3 l_position = transform.position;
+                     l_position.y -= 0.01f;
                      transform.position = l_position;
                   }
 
