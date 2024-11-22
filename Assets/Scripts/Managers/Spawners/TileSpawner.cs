@@ -1,5 +1,6 @@
 using Behaviours.Map;
 using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Managers.Spawners
@@ -53,13 +54,13 @@ namespace Managers.Spawners
             m_lastTileType = RandomTileType();
             m_lastLength = RandomLength();
 
-            bool l_hasObstacle = (m_tileCount % 3 == 0 || m_tileCount % 5 == 0 ) && !m_lastTile.HasObstacle() &&
+            bool l_hasObstacle = (m_tileCount % 3 == 0 || m_tileCount % 5 == 0 ) && !m_lastTile.HasObstacle &&
                                  m_lastTileType != EnvironmentEnum.SAND;
 
             m_lastTile = l_tile.GetComponent<TileBehaviour>();
             m_lastTile.Init(m_lastTileType, m_lastLength, l_hasObstacle);
 
-            float l_tileWidth = l_tile.GetComponent<SpriteRenderer>().bounds.size.x;
+            float l_tileWidth = l_tile.GetComponent<Transform>().lossyScale.x;
 
             Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
             Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
@@ -68,11 +69,20 @@ namespace Managers.Spawners
 
             m_timeBeforeSpawn = l_tileWidth;
 
-            if (l_hasObstacle)
-            {
-                m_obstacleSpawner.Spawn(l_tile.transform, m_lastTileType);
-            }
-        }
+         Bounds l_tileBound = l_tile.GetComponent<SpriteRenderer>().bounds;
+
+         ObstacleBehaviour[] l_obstacles = GameObject.FindObjectsByType<ObstacleBehaviour>(FindObjectsSortMode.None);
+         if(l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
+         {
+            l_hasObstacle = false;
+            m_lastTile.HasObstacle = false;
+         }
+
+         if (l_hasObstacle)
+         {
+            m_obstacleSpawner.Spawn(l_tile.transform, m_lastTileType);
+         }
+      }
 
         public int RandomLength()
         {

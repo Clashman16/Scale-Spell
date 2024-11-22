@@ -12,9 +12,10 @@ namespace Behaviours
       {
          private bool m_hasObstacle;
 
-         public bool HasObstacle()
+         public bool HasObstacle
          {
-            return m_hasObstacle;
+            get => m_hasObstacle;
+            set => m_hasObstacle = value;
          }
 
          public void Init(EnvironmentEnum p_environnement, int p_length, bool p_hasObstacle = false)
@@ -108,7 +109,7 @@ namespace Behaviours
             {
                Vector3 l_position = transform.position;
 
-               float l_distance = 0.01f;
+               float l_distance = Time.deltaTime;
 
                TileSpawner l_tileSpawner = MapManagerSingleton.GetInstance().TileSpawner();
 

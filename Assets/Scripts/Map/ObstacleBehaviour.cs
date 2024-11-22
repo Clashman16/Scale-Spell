@@ -111,7 +111,7 @@ namespace Behaviours
             {
                Vector3 l_position = transform.position;
 
-               float l_distance = 0.01f;
+               float l_distance = Time.deltaTime;
 
                l_position.x -= l_distance;
                transform.position = l_position;
