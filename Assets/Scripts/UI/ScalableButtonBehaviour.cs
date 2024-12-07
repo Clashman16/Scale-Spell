@@ -14,6 +14,11 @@ namespace Behaviours
       {
          private Action m_action;
 
+         private float m_minX;
+         private float m_maxX;
+         private float m_minY;
+         private float m_maxY;
+
          public void AddListener(Action p_action)
          {
             m_action += p_action;
@@ -24,22 +29,37 @@ namespace Behaviours
             m_action -= p_action;
          }
 
-         private void OnMouseOver()
+         private void Start()
          {
-            Vector3 l_scale = transform.localScale;
-            l_scale -= new Vector3(0.005f, 0.005f, 0.005f);
-            transform.localScale = l_scale;
+            Vector3[] l_worldCorners = new Vector3[4];
+            GetComponent<RectTransform>().GetWorldCorners(l_worldCorners);
 
-            if (l_scale.x <= 0.5f)
-            {
-               m_action.Invoke();
-               transform.localScale = Vector3.one;
-            }
+            m_minX = l_worldCorners[0].x;
+            m_maxX = l_worldCorners[2].x;
+            m_minY = l_worldCorners[0].y;
+            m_maxY = l_worldCorners[2].y;
          }
 
-         private void OnMouseExit()
+         private void Update()
          {
-            transform.localScale = Vector3.one;
+            Vector3 l_mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            if (l_mousePosition.x >= m_minX && l_mousePosition.x <= m_maxX
+               && l_mousePosition.y >= m_minY && l_mousePosition.y <= m_maxY)
+            {
+               Vector3 l_scale = transform.localScale;
+               l_scale -= new Vector3(0.005f, 0.005f, 0.005f);
+               transform.localScale = l_scale;
+
+               if (l_scale.x <= 0)
+               {
+                  m_action.Invoke();
+               }
+            }
+            else
+            {
+               transform.localScale = Vector3.one;
+            }
          }
       }
    }
