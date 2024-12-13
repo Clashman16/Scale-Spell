@@ -1,0 +1,57 @@
+using Behaviours.Characters;
+using UnityEngine;
+
+namespace Behaviours
+{
+   namespace Interactables
+   {
+      public class PotionBehaviour : MonoBehaviour
+      {
+         private Gradient m_gradient;
+
+         private float m_timer;
+         private int m_timerCoef;
+
+         private void Start()
+         {
+
+            m_gradient = new Gradient();
+
+            GradientColorKey[] l_colorKeys = new GradientColorKey[3];
+            l_colorKeys[0] = new GradientColorKey(Color.green, 0);
+            l_colorKeys[1] = new GradientColorKey(Color.white, 0.5f);
+            l_colorKeys[2] = new GradientColorKey(Color.green, 1);
+
+            GradientAlphaKey[] l_alphaKeys = new GradientAlphaKey[1] { new GradientAlphaKey(1, 1) };
+
+            m_gradient.SetKeys(l_colorKeys, l_alphaKeys);
+
+            m_timer = 0;
+            m_timerCoef = 1;
+         }
+
+         private void FixedUpdate()
+         {
+            if (m_timer > 1 || m_timer < 0)
+            {
+               m_timerCoef *= -1;
+            }
+
+            GetComponent<SpriteRenderer>().color = m_gradient.Evaluate(m_timer);
+            m_timer += 0.005f * m_timerCoef;
+         }
+
+         private void OnCollisionStay2D(Collision2D p_collision)
+         {
+            PlayerBehaviour l_player = p_collision.gameObject.GetComponent<PlayerBehaviour>();
+
+            if (l_player != null)
+            {
+               l_player.HasShield = true;
+            }
+
+            Destroy(gameObject);
+         }
+      }
+   }
+}
