@@ -42,6 +42,12 @@ namespace Managers.Spawners
          string l_spriteName = l_prefabName.ToLower();
          l_spriteName = l_spriteName.Replace(" ", "-");
          l_obstacle.GetComponent<ObstacleBehaviour>().Init(obstacleType, Path.Combine(m_spritesPath, l_spriteName));
+
+         Collider2D l_collider = l_obstacle.GetComponent<Collider2D>();
+         if(l_collider != null && l_player.HasShield)
+         {
+            l_collider.enabled = false;
+         }
       }
 
       private string GetPrefabName(Transform p_tileTransform, EnvironmentEnum p_tileType)
