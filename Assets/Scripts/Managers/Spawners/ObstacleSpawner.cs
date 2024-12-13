@@ -1,3 +1,4 @@
+using Behaviours.Characters;
 using Behaviours.Map;
 using System.IO;
 using System.Linq;
@@ -10,9 +11,26 @@ namespace Managers.Spawners
       private readonly string m_prefabsPath = "Prefabs/Map/Obstacles";
       private readonly string m_spritesPath = "Sprites/Map/Obstacles";
 
-      internal void Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour l_lastTile)
+      private PotionSpawner m_potionSpawner;
+
+      public ObstacleSpawner()
+      {
+         m_potionSpawner = new PotionSpawner();
+      }
+
+      internal void Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour p_lastTile)
       {
          string l_prefabName = GetPrefabName(p_tileTransform, p_tileType);
+
+         ObstacleType obstacleType = RandomObstacleType();
+         int l_travelledDistance = Mathf.RoundToInt(ScoreManagerSingleton.GetInstance().TravelledDistance);
+         PlayerBehaviour l_player = Object.FindObjectOfType<PlayerBehaviour>();
+         bool l_hasObstacle = p_lastTile != null && !p_lastTile.HasObstacle;
+
+         if (!l_player.HasShield && obstacleType == ObstacleType.HARMFUL && l_hasObstacle && (l_travelledDistance % 5 == 0 || l_travelledDistance % 10 == 0))
+         {
+            m_potionSpawner.Spawn(p_lastTile.transform);
+         }
 
          GameObject l_obstacle = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(m_prefabsPath, l_prefabName)));
 
@@ -23,7 +41,6 @@ namespace Managers.Spawners
 
          string l_spriteName = l_prefabName.ToLower();
          l_spriteName = l_spriteName.Replace(" ", "-");
-         ObstacleType obstacleType = RandomObstacleType();
          l_obstacle.GetComponent<ObstacleBehaviour>().Init(obstacleType, Path.Combine(m_spritesPath, l_spriteName));
       }
 
