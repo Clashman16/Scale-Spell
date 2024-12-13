@@ -1,3 +1,4 @@
+using Behaviours.Map;
 using Behaviours.UI;
 using Managers;
 using System.Linq;
@@ -95,6 +96,19 @@ namespace Utils.Callbacks
          }
 
          Object.FindObjectsOfType<PotionIndicatorBehaviour>(true).First(p_indicator => p_indicator.name.Contains("Blue")).UpdateSprite(false);
+      }
+
+      public static void OnShieldTimerStartedOrFinished(bool p_hasShield)
+      {
+         ObstacleBehaviour[] l_obstacles = Object.FindObjectsByType<ObstacleBehaviour>(FindObjectsSortMode.None);
+         foreach (ObstacleBehaviour l_obstacle in l_obstacles)
+         {
+            Collider2D l_collider = l_obstacle.GetComponent<Collider2D>();
+            if (l_collider != null)
+            {
+               l_collider.enabled = p_hasShield;
+            }
+         }
       }
    }
 }

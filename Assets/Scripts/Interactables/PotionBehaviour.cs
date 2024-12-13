@@ -50,12 +50,6 @@ namespace Behaviours
             if (l_player != null)
             {
                l_player.HasShield = true;
-
-               ObstacleBehaviour[] l_obstacles = FindObjectsByType<ObstacleBehaviour>(FindObjectsSortMode.None);
-               foreach(ObstacleBehaviour l_obstacle in l_obstacles)
-               {
-                  l_obstacle.GetComponent<Collider2D>().enabled = false;
-               }
             }
 
             Destroy(gameObject);
