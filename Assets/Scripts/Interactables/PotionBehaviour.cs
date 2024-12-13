@@ -1,4 +1,5 @@
 using Behaviours.Characters;
+using Managers;
 using UnityEngine;
 
 namespace Behaviours
@@ -51,6 +52,26 @@ namespace Behaviours
             }
 
             Destroy(gameObject);
+         }
+
+         private void Update()
+         {
+            if (GameStateManager.State == GameStateEnum.PLAYING)
+            {
+               Vector3 l_position = transform.position;
+
+               float l_distance = Time.deltaTime;
+
+               l_position.x -= l_distance;
+               transform.position = l_position;
+
+               Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+
+               if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<SpriteRenderer>().bounds))
+               {
+                  DestroyImmediate(gameObject);
+               }
+            }
          }
       }
    }

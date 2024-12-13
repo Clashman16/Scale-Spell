@@ -15,6 +15,12 @@ namespace Behaviours
          private Action m_loose;
          private bool m_isIntro;
 
+         public bool HasShield
+         {
+            get => m_hasShield;
+            set => m_hasShield = value;
+         }
+
          private void Start()
          {
             m_hasShield = false;
