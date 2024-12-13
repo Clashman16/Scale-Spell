@@ -113,7 +113,7 @@ namespace Behaviours
 
                TileSpawner l_tileSpawner = MapManagerSingleton.GetInstance().TileSpawner();
 
-               if (l_tileSpawner.LastTile() == this)
+               if (l_tileSpawner.NewTile() == this)
                {
                   l_tileSpawner.TimeBeforeSpawn -= l_distance;
                }

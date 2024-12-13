@@ -10,7 +10,7 @@ namespace Managers.Spawners
       private readonly string m_prefabsPath = "Prefabs/Map/Obstacles";
       private readonly string m_spritesPath = "Sprites/Map/Obstacles";
 
-      internal void Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType)
+      internal void Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour l_lastTile)
       {
          string l_prefabName = GetPrefabName(p_tileTransform, p_tileType);
 
@@ -23,7 +23,7 @@ namespace Managers.Spawners
 
          string l_spriteName = l_prefabName.ToLower();
          l_spriteName = l_spriteName.Replace(" ", "-");
-         ObstacleType obstacleType = GetObstacleType();
+         ObstacleType obstacleType = RandomObstacleType();
          l_obstacle.GetComponent<ObstacleBehaviour>().Init(obstacleType, Path.Combine(m_spritesPath, l_spriteName));
       }
 
@@ -82,7 +82,7 @@ namespace Managers.Spawners
          return l_y;
       }
 
-      private ObstacleType GetObstacleType()
+      private ObstacleType RandomObstacleType()
       {
          ObstacleType l_obstacleType;
 
