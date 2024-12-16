@@ -1,6 +1,7 @@
 using System;
 using Behaviours.Interactables;
 using Behaviours.Map;
+using Behaviours.UI;
 using Managers;
 using UnityEngine;
 using Utils.Callbacks;
@@ -17,6 +18,13 @@ namespace Behaviours
 
          private Action m_loose;
          private Action<bool> m_shieldTimerStartedOrFinished;
+         private ShieldBehaviour m_shield;
+
+         public ShieldBehaviour Shield
+         {
+            get => m_shield;
+            set => m_shield = value;
+         }
 
          public bool HasShield
          {
@@ -93,6 +101,10 @@ namespace Behaviours
                   {
                      m_shieldTimer = 60f;
                      m_hasShield = false;
+                     if(m_shield != null)
+                     {
+                        Destroy(m_shield.gameObject);
+                     } 
                   }
                }
             }

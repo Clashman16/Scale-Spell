@@ -1,5 +1,5 @@
 using Behaviours.Characters;
-using Behaviours.Map;
+using Behaviours.UI;
 using Managers;
 using UnityEngine;
 
@@ -16,7 +16,6 @@ namespace Behaviours
 
          private void Start()
          {
-
             m_gradient = new Gradient();
 
             GradientColorKey[] l_colorKeys = new GradientColorKey[3];
@@ -50,6 +49,9 @@ namespace Behaviours
             if (l_player != null)
             {
                l_player.HasShield = true;
+               GameObject l_shieldPrefab = Resources.Load<GameObject>("Prefabs/UI/Shield");
+               GameObject l_instantiatedObject = Instantiate(l_shieldPrefab, l_player.transform);
+               l_player.Shield = l_instantiatedObject.GetComponent<ShieldBehaviour>();
             }
 
             Destroy(gameObject);
