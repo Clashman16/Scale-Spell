@@ -111,7 +111,7 @@ namespace Behaviours
 
                float l_distance = Time.deltaTime;
 
-               TileSpawner l_tileSpawner = MapManagerSingleton.GetInstance().TileSpawner();
+               TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.GetInstance();
 
                if (l_tileSpawner.NewTile() == this)
                {

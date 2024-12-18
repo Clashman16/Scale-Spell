@@ -18,7 +18,7 @@ namespace Managers.Spawners
          m_potionSpawner = new PotionSpawner();
       }
 
-      internal void Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour p_lastTile)
+      internal ObstacleBehaviour Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour p_lastTile)
       {
          string l_prefabName = GetPrefabName(p_tileTransform, p_tileType);
 
@@ -32,22 +32,25 @@ namespace Managers.Spawners
             m_potionSpawner.Spawn(p_lastTile.transform);
          }
 
-         GameObject l_obstacle = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(m_prefabsPath, l_prefabName)));
+         GameObject l_spawnedObject = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(m_prefabsPath, l_prefabName)));
 
-         Vector3 l_position = l_obstacle.transform.position;
+         Vector3 l_position = l_spawnedObject.transform.position;
          l_position.x = p_tileTransform.transform.position.x;
          l_position.y = GetYCoordinate(l_prefabName);
-         l_obstacle.transform.position = l_position;
+         l_spawnedObject.transform.position = l_position;
 
          string l_spriteName = l_prefabName.ToLower();
          l_spriteName = l_spriteName.Replace(" ", "-");
-         l_obstacle.GetComponent<ObstacleBehaviour>().Init(obstacleType, Path.Combine(m_spritesPath, l_spriteName));
 
-         Collider2D l_collider = l_obstacle.GetComponent<Collider2D>();
-         if(l_collider != null && l_player.HasShield)
+         ObstacleBehaviour l_obstacle = l_spawnedObject.GetComponent<ObstacleBehaviour>();
+         l_spawnedObject.GetComponent<ObstacleBehaviour>().Init(obstacleType, Path.Combine(m_spritesPath, l_spriteName));
+
+         if(l_player.HasShield)
          {
-            l_collider.enabled = false;
+            l_obstacle.EnableCollider(false);
          }
+
+         return l_obstacle;
       }
 
       private string GetPrefabName(Transform p_tileTransform, EnvironmentEnum p_tileType)

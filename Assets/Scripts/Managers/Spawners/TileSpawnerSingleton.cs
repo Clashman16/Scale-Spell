@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Managers.Spawners
 {
-   public class TileSpawner
+   public sealed class TileSpawnerSingleton
    {
       private EnvironmentEnum m_newTileType;
       private int m_newLength;
@@ -37,12 +37,23 @@ namespace Managers.Spawners
          }
       }
 
-      public TileSpawner()
+      public TileSpawnerSingleton()
       {
          m_newTileType = EnvironmentEnum.NONE;
          m_newLength = 0;
          m_tileCount = 0;
          m_obstacleSpawner = new ObstacleSpawner();
+      }
+
+      private static TileSpawnerSingleton m_instance = null;
+
+      public static TileSpawnerSingleton GetInstance()
+      {
+         if (m_instance == null)
+         {
+            m_instance = new TileSpawnerSingleton();
+         }
+         return m_instance;
       }
 
       public void Spawn()
@@ -73,7 +84,7 @@ namespace Managers.Spawners
 
          Bounds l_tileBound = l_tile.GetComponent<SpriteRenderer>().bounds;
 
-         ObstacleBehaviour[] l_obstacles = GameObject.FindObjectsByType<ObstacleBehaviour>(FindObjectsSortMode.None);
+         ObstacleBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
          if (l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
          {
             l_hasObstacle = false;
@@ -82,7 +93,8 @@ namespace Managers.Spawners
 
          if (l_hasObstacle)
          {
-            m_obstacleSpawner.Spawn(l_tile.transform, m_newTileType, l_lastTile);
+            ObstacleBehaviour l_obstacle = m_obstacleSpawner.Spawn(l_tile.transform, m_newTileType, l_lastTile);
+            MapManagerSingleton.GetInstance().Obstacles.Add(l_obstacle);
          }
       }
 

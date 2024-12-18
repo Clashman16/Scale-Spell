@@ -1,11 +1,11 @@
 using Behaviours.Map;
 using Behaviours.UI;
 using Managers;
+using Managers.Spawners;
 using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace Utils.Callbacks
 {
@@ -41,7 +41,7 @@ namespace Utils.Callbacks
 
       public static void OnTimeSpawnerTimerFinished()
       {
-         MapManagerSingleton.GetInstance().TileSpawner().Spawn();
+         TileSpawnerSingleton.GetInstance().Spawn();
       }
 
       public static void OnPlayerLoose()
@@ -100,14 +100,10 @@ namespace Utils.Callbacks
 
       public static void OnShieldTimerStartedOrFinished(bool p_hasShield)
       {
-         ObstacleBehaviour[] l_obstacles = Object.FindObjectsByType<ObstacleBehaviour>(FindObjectsSortMode.None);
+         ObstacleBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
          foreach (ObstacleBehaviour l_obstacle in l_obstacles)
          {
-            Collider2D l_collider = l_obstacle.GetComponent<Collider2D>();
-            if (l_collider != null)
-            {
-               l_collider.enabled = p_hasShield;
-            }
+            l_obstacle.EnableCollider(p_hasShield);
          }
       }
    }

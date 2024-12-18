@@ -105,6 +105,29 @@ namespace Behaviours
             }
          }
 
+         public void EnableCollider(bool p_enable)
+         {
+            Collider2D l_collider = GetComponent<Collider2D>();
+
+            if (l_collider == null)
+            {
+               for (int l_i = 0; l_i < transform.childCount; l_i++)
+               {
+                  Transform l_child = transform.GetChild(l_i);
+
+                  if (l_child.GetComponent<RulerBehaviour>() == null)
+                  {
+                     l_collider = l_child.GetComponent<Collider2D>();
+                  }
+               }
+            }
+
+            if (l_collider != null)
+            {
+               l_collider.enabled = p_enable;
+            }
+         }
+
          private void Update()
          {
             if (GameStateManager.State == GameStateEnum.PLAYING)
@@ -120,6 +143,7 @@ namespace Behaviours
 
                if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<SpriteRenderer>().bounds))
                {
+                  MapManagerSingleton.GetInstance().Obstacles.Remove(this);
                   DestroyImmediate(gameObject);
                }
             }

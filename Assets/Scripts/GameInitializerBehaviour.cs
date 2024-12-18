@@ -11,11 +11,11 @@ namespace Behaviours
     {
         void Start()
         {
-            TileSpawner l_tileSpawner = MapManagerSingleton.GetInstance().TileSpawner();
-            l_tileSpawner.m_timerFinished += CallbacksLibrary.OnTimeSpawnerTimerFinished;
-            l_tileSpawner.TimeBeforeSpawn = 0;
+         TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.GetInstance();
+         l_tileSpawner.m_timerFinished += CallbacksLibrary.OnTimeSpawnerTimerFinished;
+         l_tileSpawner.TimeBeforeSpawn = 0;
 
-            foreach (ScalabbleButtonBehaviour l_button in FindObjectsOfType<ScalabbleButtonBehaviour>(true))
+         foreach (ScalabbleButtonBehaviour l_button in FindObjectsOfType<ScalabbleButtonBehaviour>(true))
             {
                 if (l_button.name == "Resume Button")
                 {
