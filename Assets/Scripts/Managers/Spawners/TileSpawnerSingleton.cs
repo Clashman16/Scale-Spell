@@ -37,7 +37,7 @@ namespace Managers.Spawners
          }
       }
 
-      public TileSpawnerSingleton()
+      private TileSpawnerSingleton()
       {
          m_newTileType = EnvironmentEnum.NONE;
          m_newLength = 0;
