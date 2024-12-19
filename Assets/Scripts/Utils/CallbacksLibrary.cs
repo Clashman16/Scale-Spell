@@ -2,9 +2,7 @@ using Behaviours.Map;
 using Behaviours.UI;
 using Managers;
 using Managers.Spawners;
-using System.Linq;
 using TMPro;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Utils.Callbacks
@@ -13,12 +11,10 @@ namespace Utils.Callbacks
    {
       public static void OnGameStateChanged(GameStateEnum p_currentGameState)
       {
-         RectTransform l_pauseMenuTrf = Object.FindObjectsOfType<RectTransform>(true)
-            .FirstOrDefault(p_transform => p_transform.name == "Pause Menu");
-         if (l_pauseMenuTrf != null)
+         UIManagerSingleton l_uiManagerSingleton = UIManagerSingleton.GetInstance();
+         if (l_uiManagerSingleton.CanDisplayPauseMenu)
          {
-            Object.FindObjectOfType<Canvas>().sortingLayerName = "UI";
-            l_pauseMenuTrf.gameObject.SetActive(p_currentGameState == GameStateEnum.PAUSED);
+            l_uiManagerSingleton.DisplayPauseMenu(p_currentGameState == GameStateEnum.PAUSED);
          }
       }
 
@@ -48,16 +44,15 @@ namespace Utils.Callbacks
       {
          GameStateManager.State = GameStateEnum.PAUSED;
                
-         TextMeshProUGUI l_menuTitle = Object.FindObjectsOfType<TextMeshProUGUI>(true).First(p_button => p_button.name == "Menu Title");
-         float l_distance = ScoreManagerSingleton.GetInstance().TravelledDistance;
-         l_menuTitle.text = string.Concat((l_distance/1000).ToString("F3"), " m");
-         l_menuTitle.color = Color.red;
+         float l_distance = ScoreManagerSingleton.GetInstance().TravelledDistance/1000;
 
-         ScalabbleButtonBehaviour p_resumeButton = Object.FindObjectsOfType<ScalabbleButtonBehaviour>(true).First(p_button => p_button.name == "Resume Button");
+         UIManagerSingleton l_uiManagerSingleton = UIManagerSingleton.GetInstance();
+         l_uiManagerSingleton.DisplayScoreOnGameOverMenu(l_distance);
+         ScalabbleButtonBehaviour l_resumeButton = l_uiManagerSingleton.ResumeButton;
 
-         p_resumeButton.GetComponentInChildren<TextMeshProUGUI>().text = "Try Again";
-         p_resumeButton.RemoveListener(Resume);
-         p_resumeButton.AddListener(Restart);
+         l_resumeButton.GetComponentInChildren<TextMeshProUGUI>().text = "Try Again";
+         l_resumeButton.RemoveListener(Resume);
+         l_resumeButton.AddListener(Restart);
 
          ScoreManagerSingleton.Reset();
       }
@@ -66,8 +61,7 @@ namespace Utils.Callbacks
       {
          ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
          l_scoreManager.TravelledDistance += p_distance;
-         Object.FindObjectsOfType<TextMeshProUGUI>(true).First(p_label => p_label.name == "Travelled Distance").text =
-            (l_scoreManager.TravelledDistance/1000).ToString("F3");
+         UIManagerSingleton.GetInstance().UpdateDistanceDisplay(l_scoreManager.TravelledDistance / 1000);
       }
       
       public static void OnIncreasePotionUsed(float p_usedQuantity)
@@ -75,13 +69,15 @@ namespace Utils.Callbacks
          ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
          l_scoreManager.IncreasePotionQuantity -= p_usedQuantity;
 
-         if(l_scoreManager.IncreasePotionQuantity <= 0)
+         UIManagerSingleton l_uiManager = UIManagerSingleton.GetInstance();
+
+         if (l_scoreManager.IncreasePotionQuantity <= 0)
          {
             l_scoreManager.IncreasePotionQuantity = 0;
-            ScalerManager.EraseScaler();
+            l_uiManager.ScalerManager.EraseScaler();
          }
 
-         Object.FindObjectsOfType<PotionIndicatorBehaviour>(true).First(p_indicator => p_indicator.name.Contains("Red")).UpdateSprite(true);
+         l_uiManager.RedPotionIndicator.UpdateSprite(true);
       }
       
       public static void OnDecreasePotionUsed(float p_usedQuantity)
@@ -89,13 +85,15 @@ namespace Utils.Callbacks
          ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
          l_scoreManager.DecreasePotionQuantity -= p_usedQuantity;
 
+         UIManagerSingleton l_uiManager = UIManagerSingleton.GetInstance();
+
          if (l_scoreManager.DecreasePotionQuantity <= 0)
          {
             l_scoreManager.DecreasePotionQuantity = 0;
-            ScalerManager.EraseScaler();
+            l_uiManager.ScalerManager.EraseScaler();
          }
 
-         Object.FindObjectsOfType<PotionIndicatorBehaviour>(true).First(p_indicator => p_indicator.name.Contains("Blue")).UpdateSprite(false);
+         l_uiManager.BluePotionIndicator.UpdateSprite(false);
       }
 
       public static void OnShieldTimerStartedOrFinished(bool p_hasShield)

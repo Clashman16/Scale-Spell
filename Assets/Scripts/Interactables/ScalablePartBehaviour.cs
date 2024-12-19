@@ -20,16 +20,19 @@ namespace Behaviours
          {
             if (GameStateManager.State == GameStateEnum.PLAYING && (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0 || ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0))
             {
-               ScalerManager.DrawScaler(GetComponent<SpriteRenderer>());
-               ScalerManager.PreviousMousePosition = Input.mousePosition;
+               ScalerManager l_scalerManager = UIManagerSingleton.GetInstance().ScalerManager;
+               l_scalerManager.DrawScaler(GetComponent<SpriteRenderer>());
+               l_scalerManager.PreviousMousePosition = Input.mousePosition;
             }
          }
 
          private void OnMouseExit()
          {
-            if(!ScalerManager.IsRescaling)
+            ScalerManager l_scalerManager = UIManagerSingleton.GetInstance().ScalerManager;
+
+            if (!l_scalerManager.IsRescaling)
             {
-               ScalerManager.EraseScaler();
+               l_scalerManager.EraseScaler();
             }
          }
 
@@ -38,10 +41,11 @@ namespace Behaviours
             Vector3 l_mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             l_mousePos.z = 0;
 
-            if (GetComponent<SpriteRenderer>().bounds.Contains(l_mousePos) || ScalerManager.IsRescaling)
+            ScalerManager l_scalerManager = UIManagerSingleton.GetInstance().ScalerManager;
+            if (GetComponent<SpriteRenderer>().bounds.Contains(l_mousePos) || l_scalerManager.IsRescaling)
             {
-               ScalerManager.EraseScaler();
-               ScalerManager.IsRescaling = false;
+               l_scalerManager.EraseScaler();
+               l_scalerManager.IsRescaling = false;
             }
          }
 
@@ -51,12 +55,14 @@ namespace Behaviours
             {
                Vector3 l_mousePosition = Input.mousePosition;
 
-               if (l_mousePosition.y < ScalerManager.PreviousMousePosition.y && ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0)
+               ScalerManager l_scalerManager = UIManagerSingleton.GetInstance().ScalerManager;
+
+               if (l_mousePosition.y < l_scalerManager.PreviousMousePosition.y && ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0)
                {
                   if(transform.localScale.x > 0.001f && transform.localScale.y > 0.001f && transform.localScale.z > 0.001f)
                   {
                      transform.localScale -= new Vector3(0.01f, 0.01f, 0);
-                     ScalerManager.UpdateColor(Color.blue);
+                     l_scalerManager.UpdateColor(Color.blue);
 
                      float l_actualScale = transform.lossyScale.x / m_originalScale;
                      float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
@@ -64,10 +70,10 @@ namespace Behaviours
                      m_previousScale = l_actualScale;
                   }
                }
-               else if (l_mousePosition.y > ScalerManager.PreviousMousePosition.y && ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0)
+               else if (l_mousePosition.y > l_scalerManager.PreviousMousePosition.y && ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0)
                {
                   transform.localScale += new Vector3(0.01f, 0.01f, 0);
-                  ScalerManager.UpdateColor(Color.red);
+                  l_scalerManager.UpdateColor(Color.red);
                   
                   float l_actualScale = transform.lossyScale.x / m_originalScale;
                   float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
@@ -76,8 +82,8 @@ namespace Behaviours
                }
 
                GetComponent<SpriteRenderer>().sortingLayerName = "Obstacles";
-               ScalerManager.PreviousMousePosition = l_mousePosition;
-               ScalerManager.IsRescaling = true;
+               l_scalerManager.PreviousMousePosition = l_mousePosition;
+               l_scalerManager.IsRescaling = true;
             }
          }
       }

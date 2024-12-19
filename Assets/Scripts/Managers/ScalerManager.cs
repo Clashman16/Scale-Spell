@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace Managers
 {
-   public static class ScalerManager
+   public class ScalerManager
    {
-      private static GameObject m_scalerGameObject;
+      private GameObject m_scalerGameObject;
 
-      private static Vector3 m_previousMousePosition;
-      public static Vector3 PreviousMousePosition
+      private Vector3 m_previousMousePosition;
+      public Vector3 PreviousMousePosition
       {
          get { return m_previousMousePosition; }
          set
@@ -17,8 +17,8 @@ namespace Managers
          }
       }
 
-      private static bool m_isRescaling = false;
-      public static bool IsRescaling
+      private bool m_isRescaling = false;
+      public bool IsRescaling
       {
          get { return m_isRescaling; }
          set
@@ -27,7 +27,7 @@ namespace Managers
          }
       }
 
-      public static void DrawScaler(SpriteRenderer l_spriteRenderer)
+      public void DrawScaler(SpriteRenderer l_spriteRenderer)
       {
          m_scalerGameObject = new GameObject("Scaler");
          m_scalerGameObject.AddComponent<LineRenderer>();
@@ -35,7 +35,7 @@ namespace Managers
          l_scaler.Init(l_spriteRenderer);
       }
 
-      public static void EraseScaler()
+      public void EraseScaler()
       {
          if(m_scalerGameObject != null)
          {
@@ -43,7 +43,7 @@ namespace Managers
          }
       }
 
-      public static void UpdateColor(Color p_color)
+      public void UpdateColor(Color p_color)
       {
          if(m_scalerGameObject != null)
          {

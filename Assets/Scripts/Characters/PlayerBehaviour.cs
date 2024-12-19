@@ -63,7 +63,7 @@ namespace Behaviours
             {
                if (GameStateManager.State == GameStateEnum.PLAYING)
                {
-                  if (Input.GetMouseButton(0) && !ScalerManager.IsRescaling)
+                  if (Input.GetMouseButton(0) && !UIManagerSingleton.GetInstance().ScalerManager.IsRescaling)
                   {
                      Vector3 l_position = transform.position;
                      l_position.y += 0.01f;
