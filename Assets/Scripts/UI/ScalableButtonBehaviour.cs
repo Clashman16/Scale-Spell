@@ -10,7 +10,7 @@ namespace Behaviours
    namespace UI
    {
       [RequireComponent(typeof(BoxCollider2D))]
-      public class ScalabbleButtonBehaviour : MonoBehaviour
+      public class ScalableButtonBehaviour : MonoBehaviour
       {
          private Action m_action;
 

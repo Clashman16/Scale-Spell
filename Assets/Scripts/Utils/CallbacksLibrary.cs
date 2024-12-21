@@ -48,7 +48,7 @@ namespace Utils.Callbacks
 
          UIManagerSingleton l_uiManagerSingleton = UIManagerSingleton.GetInstance();
          l_uiManagerSingleton.DisplayScoreOnGameOverMenu(l_distance);
-         ScalabbleButtonBehaviour l_resumeButton = l_uiManagerSingleton.ResumeButton;
+         ScalableButtonBehaviour l_resumeButton = l_uiManagerSingleton.ResumeButton;
 
          l_resumeButton.GetComponentInChildren<TextMeshProUGUI>().text = "Try Again";
          l_resumeButton.RemoveListener(Resume);

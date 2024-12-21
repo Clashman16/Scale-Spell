@@ -11,7 +11,7 @@ namespace Behaviours
       {
          GameStateManager.m_gameStateChanged += CallbacksLibrary.OnGameStateChanged;
 
-         foreach (ScalabbleButtonBehaviour l_button in FindObjectsOfType<ScalabbleButtonBehaviour>(true))
+         foreach (ScalableButtonBehaviour l_button in FindObjectsOfType<ScalableButtonBehaviour>(true))
          {
             if (l_button.name == "Play Button")
             {;

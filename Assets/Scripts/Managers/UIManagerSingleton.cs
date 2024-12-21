@@ -33,9 +33,9 @@ namespace Managers
 
       private TextMeshProUGUI l_travelledDistanceIndicator;
 
-      ScalabbleButtonBehaviour m_resumeButton;
+      ScalableButtonBehaviour m_resumeButton;
 
-      public ScalabbleButtonBehaviour ResumeButton
+      public ScalableButtonBehaviour ResumeButton
       {
          get => m_resumeButton;
       }
@@ -74,7 +74,7 @@ namespace Managers
                }
             }
 
-            ScalabbleButtonBehaviour l_button = l_uiElement.GetComponent<ScalabbleButtonBehaviour>();
+            ScalableButtonBehaviour l_button = l_uiElement.GetComponent<ScalableButtonBehaviour>();
             if (l_button != null)
             {
                if (l_button.name == "Resume Button")
