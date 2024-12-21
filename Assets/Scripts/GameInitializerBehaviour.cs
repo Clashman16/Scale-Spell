@@ -13,7 +13,7 @@ namespace Behaviours
          l_tileSpawner.m_timerFinished += CallbacksLibrary.OnTimeSpawnerTimerFinished;
          l_tileSpawner.TimeBeforeSpawn = 0;
 
-         UIManagerSingleton.GetInstance();
+         UIManagerSingleton.GetInstance().Init();
 
          DestroyImmediate(gameObject);
       }
