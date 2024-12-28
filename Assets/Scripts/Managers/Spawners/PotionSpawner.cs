@@ -9,7 +9,7 @@ namespace Managers.Spawners
 
       internal void Spawn(Transform p_tileTransform)
       {
-         GameObject l_potion = Object.Instantiate(Resources.Load<GameObject>("Prefabs/Items/Potion"));
+         GameObject l_potion = Object.Instantiate(Resources.Load<GameObject>(m_prefabsPath));
 
          PlayerBehaviour l_player = Object.FindObjectOfType<PlayerBehaviour>();
          if (CloseToPlayer())
