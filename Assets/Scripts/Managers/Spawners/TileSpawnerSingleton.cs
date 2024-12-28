@@ -1,7 +1,9 @@
 using Behaviours.Map;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
 namespace Managers.Spawners
 {
@@ -10,16 +12,7 @@ namespace Managers.Spawners
       private EnvironmentEnum m_newTileType;
       private int m_newLength;
 
-      private TileBehaviour m_newTile;
-
-      private int m_tileCount;
-
       private ObstacleSpawner m_obstacleSpawner;
-
-      public TileBehaviour NewTile()
-      {
-         return m_newTile;
-      }
 
       private float m_timeBeforeSpawn;
       public Action m_timerFinished;
@@ -41,7 +34,6 @@ namespace Managers.Spawners
       {
          m_newTileType = EnvironmentEnum.NONE;
          m_newLength = 0;
-         m_tileCount = 0;
          m_obstacleSpawner = new ObstacleSpawner();
       }
 
@@ -58,27 +50,32 @@ namespace Managers.Spawners
 
       public void Spawn()
       {
-         m_tileCount++;
+         MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+         List<TileBehaviour> l_tiles = l_mapManager.Tiles;
 
          GameObject l_tile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
 
-         m_newTileType = RandomTileType();
-         m_newLength = RandomLength();
+         m_newTileType = RandomTileType(l_tiles);
+         m_newLength = RandomLength(l_tiles);
 
-         TileBehaviour l_lastTile = m_newTile;
+         TileBehaviour l_lastTile = null;
+         if(l_tiles.Count > 0)
+         {
+            l_lastTile = l_tiles.Last();
+         }
 
-         bool l_hasObstacle = (m_tileCount % 3 == 0 || m_tileCount % 5 == 0) && !l_lastTile.HasObstacle &&
+         bool l_hasObstacle = (l_tiles.Count % 3 == 0 || l_tiles.Count % 5 == 0) && l_lastTile != null && !l_lastTile.HasObstacle &&
                               m_newTileType != EnvironmentEnum.SAND;
 
-         m_newTile = l_tile.GetComponent<TileBehaviour>();
-         m_newTile.Init(m_newTileType, m_newLength, l_hasObstacle);
+         TileBehaviour l_newTile = l_tile.GetComponent<TileBehaviour>();
+         l_newTile.Init(m_newTileType, m_newLength, l_hasObstacle);
 
          float l_tileWidth = l_tile.GetComponent<Transform>().lossyScale.x;
 
          Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
          Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
          Vector3 l_spawnPosition = l_worldPosition + new Vector3(l_tileWidth / 2, 0.5f, 0);
-         m_newTile.transform.position = l_spawnPosition;
+         l_newTile.transform.position = l_spawnPosition;
 
          m_timeBeforeSpawn = l_tileWidth;
 
@@ -88,55 +85,80 @@ namespace Managers.Spawners
          if (l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
          {
             l_hasObstacle = false;
-            m_newTile.HasObstacle = false;
+            l_newTile.HasObstacle = false;
          }
 
          if (l_hasObstacle)
          {
             ObstacleBehaviour l_obstacle = m_obstacleSpawner.Spawn(l_tile.transform, m_newTileType, l_lastTile);
-            MapManagerSingleton.GetInstance().Obstacles.Add(l_obstacle);
+            l_mapManager.Obstacles.Add(l_obstacle);
          }
       }
 
-      public int RandomLength()
+      private int TileLengthMajority(List<TileBehaviour> p_tiles)
       {
-         int l_length = 0;
+         Dictionary<int, int> l_count = new Dictionary<int, int>();
 
-         int l_trialsCount = 3;
-         while (l_trialsCount > 0)
+         foreach (TileBehaviour l_tile in p_tiles)
          {
-            l_length = UnityEngine.Random.Range(1, 5);
-
-            if (l_length != m_newLength)
+            if (l_count.ContainsKey(l_tile.Length))
             {
-               l_trialsCount = 0;
+               l_count[l_tile.Length]++;
             }
             else
             {
-               l_trialsCount--;
+               l_count[l_tile.Length] = 1;
             }
+         }
+
+         return l_count.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+      }
+
+
+      private int RandomLength(List<TileBehaviour> p_tiles)
+      {
+         int l_maxLengthExclusive = 5;
+
+         int l_length = UnityEngine.Random.Range(0, l_maxLengthExclusive);
+
+         if (p_tiles.Count != 0)
+         {
+            int l_lastLength = p_tiles.Last().Length;
+            l_length = RandomIntHelper.GetRandomValue(l_lastLength, TileTypeMajority(p_tiles), l_maxLengthExclusive);
          }
 
          return l_length;
       }
 
-      private EnvironmentEnum RandomTileType()
+      private int TileTypeMajority(List<TileBehaviour> p_tiles)
       {
-         int l_envId = 0;
+         Dictionary<EnvironmentEnum, int> l_count = new Dictionary<EnvironmentEnum, int>();
 
-         int l_trialsCount = 3;
-         while (l_trialsCount > 0)
+         foreach (TileBehaviour l_tile in p_tiles)
          {
-            l_envId = UnityEngine.Random.Range(0, 3);
-
-            if (l_envId != (int)m_newTileType)
+            if (l_count.ContainsKey(l_tile.Type))
             {
-               l_trialsCount = 0;
+               l_count[l_tile.Type]++;
             }
             else
             {
-               l_trialsCount--;
+               l_count[l_tile.Type] = 1;
             }
+         }
+
+         return (int) l_count.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+      }
+
+      private EnvironmentEnum RandomTileType(List<TileBehaviour> p_tiles)
+      {
+         int l_enumSize = 3;
+
+         int l_envId = UnityEngine.Random.Range(0, l_enumSize);
+
+         if(p_tiles.Count != 0)
+         {
+            EnvironmentEnum l_lastType = p_tiles.Last().Type;
+            l_envId = RandomIntHelper.GetRandomValue((int)l_lastType, TileTypeMajority(p_tiles), l_enumSize);
          }
 
          return (EnvironmentEnum)l_envId;

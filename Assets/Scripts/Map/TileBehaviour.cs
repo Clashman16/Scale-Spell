@@ -2,6 +2,8 @@ using Behaviours.Characters;
 using Behaviours.Interactables;
 using Managers;
 using Managers.Spawners;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Behaviours
@@ -18,24 +20,47 @@ namespace Behaviours
             set => m_hasObstacle = value;
          }
 
+         private EnvironmentEnum m_type;
+
+         public EnvironmentEnum Type
+         {
+            get => m_type;
+         }
+
+         private int m_length;
+
+         public int Length
+         {
+            get => m_length;
+         }
+
+         private void Start()
+         {
+            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+            List<TileBehaviour> l_tiles = l_mapManager.Tiles;
+            l_tiles.Add(this);
+         }
+
          public void Init(EnvironmentEnum p_environnement, int p_length, bool p_hasObstacle = false)
          {
             m_hasObstacle = p_hasObstacle;
+            m_type = p_environnement;
+            m_length = p_length;
 
             ChangeSprite(p_environnement);
-            Resize(p_length);
+            Resize();
 
             InitRuler();
             DestroyRuler();
          }
 
-         private void Resize(int p_length)
+         private void Resize()
          {
             Transform l_rulerTrf = GetComponentInChildren<RulerBehaviour>().transform;
             l_rulerTrf.SetParent(null);
 
             Vector3 l_scale = transform.localScale;
-            l_scale.x = p_length;
+            l_scale.x = m_length;
             transform.localScale = l_scale;
 
             l_rulerTrf.SetParent(transform);
@@ -113,7 +138,9 @@ namespace Behaviours
 
                TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.GetInstance();
 
-               if (l_tileSpawner.NewTile() == this)
+               List<TileBehaviour> l_tiles = MapManagerSingleton.GetInstance().Tiles;
+
+               if (l_tiles.Last() == this)
                {
                   l_tileSpawner.TimeBeforeSpawn -= l_distance;
                }
@@ -133,6 +160,7 @@ namespace Behaviours
                Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
                if (!GeometryUtility.TestPlanesAABB(l_planes, l_bounds))
                {
+                  l_tiles.Remove(this);
                   DestroyImmediate(gameObject);
                }
             }

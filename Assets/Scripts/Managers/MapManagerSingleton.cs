@@ -8,6 +8,12 @@ namespace Managers
    {
       private TileSpawnerSingleton m_tileSpawner;
 
+      private List<TileBehaviour> m_tiles;
+      public List<TileBehaviour> Tiles
+      {
+         get => m_tiles;
+      }
+
       private List<ObstacleBehaviour> m_obstacles;
       public List<ObstacleBehaviour> Obstacles
       {
@@ -16,6 +22,7 @@ namespace Managers
 
       private MapManagerSingleton()
       {
+         m_tiles = new List<TileBehaviour>();
          m_obstacles = new List<ObstacleBehaviour>();
       }
 
