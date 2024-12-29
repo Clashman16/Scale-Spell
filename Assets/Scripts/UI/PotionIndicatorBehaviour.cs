@@ -31,6 +31,11 @@ namespace Behaviours
                l_index = 10;
             }
 
+            if (l_index < 0)
+            {
+               l_index = 0;
+            }
+
             m_image.sprite = m_spritesheet[l_index];
          }
       }
