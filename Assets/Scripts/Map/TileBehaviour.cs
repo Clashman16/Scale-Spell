@@ -34,13 +34,6 @@ namespace Behaviours
             get => m_length;
          }
 
-         private void Start()
-         {
-            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
-            List<TileBehaviour> l_tiles = l_mapManager.Tiles;
-            l_tiles.Add(this);
-         }
-
          public void Init(EnvironmentEnum p_environnement, int p_length, bool p_hasObstacle = false)
          {
             m_hasObstacle = p_hasObstacle;

@@ -1,8 +1,10 @@
 using Behaviours.Characters;
 using Behaviours.Map;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
 namespace Managers.Spawners
 {
@@ -18,16 +20,18 @@ namespace Managers.Spawners
          m_potionSpawner = new PotionSpawner();
       }
 
-      internal ObstacleBehaviour Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour p_lastTile)
+      internal void Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour p_lastTile)
       {
-         string l_prefabName = GetPrefabName(p_tileTransform, p_tileType);
+         List<ObstacleBehaviour> l_obstacles = MapManagerSingleton.GetInstance().Obstacles;
+         ObstacleType l_obstacleType = RandomObstacleType(l_obstacles);
+         bool l_isBig = RandomSize(p_tileTransform, l_obstacles);
+         string l_prefabName = GetPrefabName(l_isBig, p_tileType);
 
-         ObstacleType obstacleType = RandomObstacleType();
          int l_travelledDistance = Mathf.RoundToInt(ScoreManagerSingleton.GetInstance().TravelledDistance);
          PlayerBehaviour l_player = Object.FindObjectOfType<PlayerBehaviour>();
          bool l_hasObstacle = p_lastTile != null && !p_lastTile.HasObstacle;
 
-         if (!l_player.HasShield && obstacleType == ObstacleType.HARMFUL && l_hasObstacle && (l_travelledDistance % 5 == 0 || l_travelledDistance % 10 == 0))
+         if (!l_player.HasShield && l_obstacleType == ObstacleType.HARMFUL && l_hasObstacle && (l_travelledDistance % 5 == 0 || l_travelledDistance % 10 == 0))
          {
             m_potionSpawner.Spawn(p_lastTile.transform);
          }
@@ -43,31 +47,17 @@ namespace Managers.Spawners
          l_spriteName = l_spriteName.Replace(" ", "-");
 
          ObstacleBehaviour l_obstacle = l_spawnedObject.GetComponent<ObstacleBehaviour>();
-         l_spawnedObject.GetComponent<ObstacleBehaviour>().Init(obstacleType, Path.Combine(m_spritesPath, l_spriteName));
+         l_obstacle.Init(l_obstacleType, l_isBig, Path.Combine(m_spritesPath, l_spriteName));
 
          if(l_player.HasShield)
          {
             l_obstacle.EnableCollider(false);
          }
-
-         return l_obstacle;
       }
 
-      private string GetPrefabName(Transform p_tileTransform, EnvironmentEnum p_tileType)
+      private string GetPrefabName(bool p_isBig, EnvironmentEnum p_tileType)
       {
-         string l_prefabName = "";
-         int p_length = (int)p_tileTransform.localScale.x;
-
-         if (p_length == 1)
-         {
-            l_prefabName += "Little";
-         }
-         else
-         {
-            int l_chance = Random.Range(0, p_length);
-            l_prefabName += l_chance >= p_length / 2 ? "Little" : "Big";
-         }
-
+         string l_prefabName = p_isBig ? "Big" : "Little";
          l_prefabName += " ";
 
          switch (p_tileType)
@@ -108,61 +98,106 @@ namespace Managers.Spawners
          return l_y;
       }
 
-      private ObstacleType RandomObstacleType()
+      private int ObstacleSizeMajority(List<ObstacleBehaviour> p_obstacles)
       {
-         ObstacleType l_obstacleType;
+         Dictionary<int, int> l_count = new Dictionary<int, int>();
+
+         foreach (ObstacleBehaviour l_obstacle in p_obstacles)
+         {
+            int l_isBigId = l_obstacle.IsBig ? 1 : 0;
+
+            if (l_count.ContainsKey(l_isBigId))
+            {
+               l_count[l_isBigId]++;
+            }
+            else
+            {
+               l_count[l_isBigId] = 1;
+            }
+         }
+
+         return l_count.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+      }
+
+
+      private bool RandomSize(Transform p_tileTransform, List<ObstacleBehaviour> p_obstacle)
+      {
+         int p_length = (int) p_tileTransform.localScale.x;
+
+         int l_isBigId = p_length <= 2 ? 0 : 1;
+
+         if (l_isBigId == 1)
+         {
+            int l_maxLengthExclusive = 2;
+
+            l_isBigId = Random.Range(0, l_maxLengthExclusive);
+
+            if (p_obstacle.Count != 0)
+            {
+               int l_lastIsBigId = p_obstacle.Last().IsBig ? 1 : 0;
+               l_isBigId = RandomIntHelper.GetRandomValue(l_lastIsBigId, ObstacleSizeMajority(p_obstacle), l_maxLengthExclusive);
+            }
+         }
+
+         return l_isBigId == 0 ? false : true;
+      }
+
+      private int ObstacleTypeMajority(List<ObstacleBehaviour> p_obstacles)
+      {
+         Dictionary<ObstacleType, int> l_count = new Dictionary<ObstacleType, int>();
+
+         foreach (ObstacleBehaviour l_obstacle in p_obstacles)
+         {
+            if (l_count.ContainsKey(l_obstacle.Type))
+            {
+               l_count[l_obstacle.Type]++;
+            }
+            else
+            {
+               l_count[l_obstacle.Type] = 1;
+            }
+         }
+
+         return (int)l_count.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+      }
+
+      private ObstacleType RandomObstacleType(List<ObstacleBehaviour> p_obstacles)
+      {
+         int l_envId;
+         int l_enumSize = 3;
+
+         ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
+         float l_increasePotionQuantity = l_scoreManager.IncreasePotionQuantity;
+         float l_decreasePotionQuantity = l_scoreManager.DecreasePotionQuantity;
 
          if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < 0.5 ||
                  ScoreManagerSingleton.GetInstance().DecreasePotionQuantity < 0.5)
          {
-            if (Random.Range(0, 10) >= 5)
+            if (l_increasePotionQuantity > l_decreasePotionQuantity)
             {
-               l_obstacleType = (ObstacleType)Random.Range(1, 3);
+               l_envId = Random.Range(1, l_enumSize);
+            }
+            else if (l_increasePotionQuantity < l_decreasePotionQuantity)
+            {
+               l_envId = (int) ObstacleType.HARMFUL;
             }
             else
             {
-               l_obstacleType = ObstacleType.HARMFUL;
+               l_envId = (int)ObstacleType.INBETWEEN;
             }
          }
          else
          {
-            ObstacleBehaviour[] l_obstacles = Object.FindObjectsOfType<ObstacleBehaviour>();
-            int[] l_typesCount = { 0, 0, 0 };
+            l_envId = Random.Range(0, l_enumSize);
 
-            foreach (ObstacleBehaviour l_obstacle in l_obstacles)
+            if (p_obstacles.Count != 0)
             {
-               l_typesCount[(int)l_obstacle.GetObstacleType()] += 1;
-            }
-
-            if (l_typesCount[0] == l_typesCount[1] && l_typesCount[1] == l_typesCount[2])
-            {
-               l_obstacleType = (ObstacleType)Random.Range(0, 3);
-            }
-            else if (l_typesCount[0] == l_typesCount[1] && l_typesCount[2] > l_typesCount[1])
-            {
-               l_obstacleType = (ObstacleType)Random.Range(0, 2);
-            }
-            else if (l_typesCount[1] == l_typesCount[2] && l_typesCount[0] > l_typesCount[1])
-            {
-               l_obstacleType = (ObstacleType)Random.Range(1, 3);
-            }
-            else if (l_typesCount[0] == l_typesCount[2] && l_typesCount[1] > l_typesCount[0])
-            {
-               int l_randomValue = Random.Range(0, 2);
-               if (l_randomValue == 1)
-               {
-                  l_randomValue = 2;
-               }
-
-               l_obstacleType = (ObstacleType)l_randomValue;
-            }
-            else
-            {
-               l_obstacleType = (ObstacleType)l_typesCount.Min();
+               ObstacleType l_lastType = p_obstacles.Last().Type;
+               l_envId = RandomIntHelper.GetRandomValue((int)l_lastType, ObstacleTypeMajority(p_obstacles), l_enumSize);
             }
          }
 
-         return l_obstacleType;
+         return (ObstacleType) l_envId;
       }
    }
 }

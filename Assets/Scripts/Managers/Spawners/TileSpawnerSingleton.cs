@@ -48,12 +48,12 @@ namespace Managers.Spawners
          return m_instance;
       }
 
-      public void Spawn()
+      internal void Spawn()
       {
          MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
          List<TileBehaviour> l_tiles = l_mapManager.Tiles;
 
-         GameObject l_tile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
+         GameObject l_instantiatedTile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
 
          m_newTileType = RandomTileType(l_tiles);
          m_newLength = RandomLength(l_tiles);
@@ -67,10 +67,10 @@ namespace Managers.Spawners
          bool l_hasObstacle = (l_tiles.Count % 3 == 0 || l_tiles.Count % 5 == 0) && l_lastTile != null && !l_lastTile.HasObstacle &&
                               m_newTileType != EnvironmentEnum.SAND;
 
-         TileBehaviour l_newTile = l_tile.GetComponent<TileBehaviour>();
+         TileBehaviour l_newTile = l_instantiatedTile.GetComponent<TileBehaviour>();
          l_newTile.Init(m_newTileType, m_newLength, l_hasObstacle);
 
-         float l_tileWidth = l_tile.GetComponent<Transform>().lossyScale.x;
+         float l_tileWidth = l_instantiatedTile.GetComponent<Transform>().lossyScale.x;
 
          Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
          Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
@@ -79,7 +79,7 @@ namespace Managers.Spawners
 
          m_timeBeforeSpawn = l_tileWidth;
 
-         Bounds l_tileBound = l_tile.GetComponent<SpriteRenderer>().bounds;
+         Bounds l_tileBound = l_instantiatedTile.GetComponent<SpriteRenderer>().bounds;
 
          ObstacleBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
          if (l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
@@ -90,9 +90,10 @@ namespace Managers.Spawners
 
          if (l_hasObstacle)
          {
-            ObstacleBehaviour l_obstacle = m_obstacleSpawner.Spawn(l_tile.transform, m_newTileType, l_lastTile);
-            l_mapManager.Obstacles.Add(l_obstacle);
+            m_obstacleSpawner.Spawn(l_instantiatedTile.transform, m_newTileType, l_lastTile);
          }
+
+         l_tiles.Add(l_newTile);
       }
 
       private int TileLengthMajority(List<TileBehaviour> p_tiles)

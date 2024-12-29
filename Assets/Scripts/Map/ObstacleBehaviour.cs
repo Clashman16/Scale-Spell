@@ -1,5 +1,6 @@
 using Behaviours.Interactables;
 using Managers;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Behaviours
@@ -8,25 +9,40 @@ namespace Behaviours
    {
       public class ObstacleBehaviour : ScalablePartBehaviour
       {
-         private ObstacleType m_obstacleType;
+         private ObstacleType m_type;
 
-         public ObstacleType GetObstacleType()
+         public ObstacleType Type
          {
-            return m_obstacleType;
+            get => m_type;
          }
 
-         public void Init(ObstacleType p_obstacleType, string p_spritePath)
+         private bool m_isBig;
+
+         public bool IsBig
          {
-            m_obstacleType = p_obstacleType;
+            get => m_isBig;
+         }
+
+         private void Start()
+         {
+            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+            List<ObstacleBehaviour> l_obstacles = l_mapManager.Obstacles;
+            l_obstacles.Add(this);
+         }
+
+         public void Init(ObstacleType p_obstacleType, bool p_isBig, string p_spritePath)
+         {
+            m_type = p_obstacleType;
+            m_isBig = p_isBig;
 
             SpriteRenderer l_renderer = GetComponent<SpriteRenderer>();
-            l_renderer.sprite = Resources.LoadAll<Sprite>(p_spritePath)[(int) m_obstacleType];
+            l_renderer.sprite = Resources.LoadAll<Sprite>(p_spritePath)[(int) m_type];
 
-            if(m_obstacleType != ObstacleType.INBETWEEN)
+            if(m_type != ObstacleType.INBETWEEN)
             {
                DestroyImmediate(transform.GetChild(0).gameObject);
                
-               if(m_obstacleType == ObstacleType.HARMLESS)
+               if(m_type == ObstacleType.HARMLESS)
                {
                   DestroyImmediate(GetComponent<Collider2D>());
                }
@@ -54,7 +70,7 @@ namespace Behaviours
          {
             if ((ScoreManagerSingleton.GetInstance().IncreasePotionQuantity >= 0.5 &&
                  ScoreManagerSingleton.GetInstance().DecreasePotionQuantity >= 0.5) ||
-                m_obstacleType == ObstacleType.HARMFUL)
+                m_type == ObstacleType.HARMFUL)
             {
                RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
                for (int l_i = 0; l_i < l_rulers.Length; l_i++)

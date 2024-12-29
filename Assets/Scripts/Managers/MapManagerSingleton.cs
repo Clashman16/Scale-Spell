@@ -36,6 +36,11 @@ namespace Managers
          }
          return m_instance;
       }
+
+      public static void Reset()
+      {
+         m_instance = null;
+      }
    }
 }
 

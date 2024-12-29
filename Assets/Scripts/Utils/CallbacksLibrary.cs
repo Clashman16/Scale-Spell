@@ -55,6 +55,7 @@ namespace Utils.Callbacks
          l_resumeButton.AddListener(Restart);
 
          ScoreManagerSingleton.Reset();
+         MapManagerSingleton.Reset();
       }
 
       public static void OnMeterTravelled(float p_distance)
