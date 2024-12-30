@@ -127,10 +127,9 @@ namespace Managers.Spawners
          return l_majority;
       }
 
-
       private int RandomLength(List<TileBehaviour> p_tiles)
       {
-         int l_maxLengthExclusive = 5;
+         int l_maxLengthExclusive = 4;
 
          int l_length = UnityEngine.Random.Range(0, l_maxLengthExclusive);
 
@@ -139,6 +138,8 @@ namespace Managers.Spawners
             int l_lastLength = p_tiles[p_tiles.Count - 1].Length;
             l_length = RandomIntHelper.GetRandomValue(l_lastLength, TileTypeMajority(p_tiles), l_maxLengthExclusive);
          }
+
+         l_length += 1;
 
          return l_length;
       }
