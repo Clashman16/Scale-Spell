@@ -2,7 +2,6 @@ using Behaviours.Characters;
 using Behaviours.Map;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using Utils;
 
@@ -101,6 +100,7 @@ namespace Managers.Spawners
       private int ObstacleSizeMajority(List<ObstacleBehaviour> p_obstacles)
       {
          Dictionary<int, int> l_count = new Dictionary<int, int>();
+         int l_majority = -1;
 
          foreach (ObstacleBehaviour l_obstacle in p_obstacles)
          {
@@ -109,18 +109,28 @@ namespace Managers.Spawners
             if (l_count.ContainsKey(l_isBigId))
             {
                l_count[l_isBigId]++;
+
+               if (l_count[l_isBigId] > l_count[l_majority])
+               {
+                  l_majority = l_isBigId;
+               }
             }
             else
             {
                l_count[l_isBigId] = 1;
+
+               if (l_majority == -1)
+               {
+                  l_majority = l_isBigId;
+               }
             }
          }
 
-         return l_count.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+         return l_majority;
       }
 
 
-      private bool RandomSize(Transform p_tileTransform, List<ObstacleBehaviour> p_obstacle)
+      private bool RandomSize(Transform p_tileTransform, List<ObstacleBehaviour> p_obstacles)
       {
          int p_length = (int) p_tileTransform.localScale.x;
 
@@ -132,10 +142,10 @@ namespace Managers.Spawners
 
             l_isBigId = Random.Range(0, l_maxLengthExclusive);
 
-            if (p_obstacle.Count != 0)
+            if (p_obstacles.Count != 0)
             {
-               int l_lastIsBigId = p_obstacle.Last().IsBig ? 1 : 0;
-               l_isBigId = RandomIntHelper.GetRandomValue(l_lastIsBigId, ObstacleSizeMajority(p_obstacle), l_maxLengthExclusive);
+               int l_lastIsBigId = p_obstacles[p_obstacles.Count - 1].IsBig ? 1 : 0;
+               l_isBigId = RandomIntHelper.GetRandomValue(l_lastIsBigId, ObstacleSizeMajority(p_obstacles), l_maxLengthExclusive);
             }
          }
 
@@ -145,20 +155,32 @@ namespace Managers.Spawners
       private int ObstacleTypeMajority(List<ObstacleBehaviour> p_obstacles)
       {
          Dictionary<ObstacleType, int> l_count = new Dictionary<ObstacleType, int>();
+         int l_majority = -1;
 
          foreach (ObstacleBehaviour l_obstacle in p_obstacles)
          {
-            if (l_count.ContainsKey(l_obstacle.Type))
+            ObstacleType l_type = l_obstacle.Type;
+            if (l_count.ContainsKey(l_type))
             {
                l_count[l_obstacle.Type]++;
+
+               if (l_count[l_type] > l_count[(ObstacleType)l_majority])
+               {
+                  l_majority = (int)l_type;
+               }
             }
             else
             {
-               l_count[l_obstacle.Type] = 1;
+               l_count[l_type] = 1;
+
+               if (l_majority == -1)
+               {
+                  l_majority = (int)l_type;
+               }
             }
          }
 
-         return (int)l_count.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+         return l_majority;
       }
 
       private ObstacleType RandomObstacleType(List<ObstacleBehaviour> p_obstacles)
@@ -192,7 +214,7 @@ namespace Managers.Spawners
 
             if (p_obstacles.Count != 0)
             {
-               ObstacleType l_lastType = p_obstacles.Last().Type;
+               ObstacleType l_lastType = p_obstacles[p_obstacles.Count - 1].Type;
                l_envId = RandomIntHelper.GetRandomValue((int)l_lastType, ObstacleTypeMajority(p_obstacles), l_enumSize);
             }
          }

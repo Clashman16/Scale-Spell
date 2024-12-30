@@ -61,7 +61,7 @@ namespace Managers.Spawners
          TileBehaviour l_lastTile = null;
          if(l_tiles.Count > 0)
          {
-            l_lastTile = l_tiles.Last();
+            l_lastTile = l_tiles[l_tiles.Count-1];
          }
 
          bool l_hasObstacle = (l_tiles.Count % 3 == 0 || l_tiles.Count % 5 == 0) && l_lastTile != null && !l_lastTile.HasObstacle &&
@@ -99,20 +99,32 @@ namespace Managers.Spawners
       private int TileLengthMajority(List<TileBehaviour> p_tiles)
       {
          Dictionary<int, int> l_count = new Dictionary<int, int>();
+         int l_majority = -1;
 
          foreach (TileBehaviour l_tile in p_tiles)
          {
-            if (l_count.ContainsKey(l_tile.Length))
+            int l_length = l_tile.Length;
+            if (l_count.ContainsKey(l_length))
             {
-               l_count[l_tile.Length]++;
+               l_count[l_length]++;
+
+               if(l_count[l_length] > l_count[l_majority])
+               {
+                  l_majority = l_length;
+               }
             }
             else
             {
-               l_count[l_tile.Length] = 1;
+               l_count[l_length] = 1;
+               
+               if(l_majority == -1)
+               {
+                  l_majority = l_length;
+               }
             }
          }
 
-         return l_count.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+         return l_majority;
       }
 
 
@@ -124,7 +136,7 @@ namespace Managers.Spawners
 
          if (p_tiles.Count != 0)
          {
-            int l_lastLength = p_tiles.Last().Length;
+            int l_lastLength = p_tiles[p_tiles.Count - 1].Length;
             l_length = RandomIntHelper.GetRandomValue(l_lastLength, TileTypeMajority(p_tiles), l_maxLengthExclusive);
          }
 
@@ -134,20 +146,32 @@ namespace Managers.Spawners
       private int TileTypeMajority(List<TileBehaviour> p_tiles)
       {
          Dictionary<EnvironmentEnum, int> l_count = new Dictionary<EnvironmentEnum, int>();
+         int l_majority = -1;
 
          foreach (TileBehaviour l_tile in p_tiles)
          {
-            if (l_count.ContainsKey(l_tile.Type))
+            EnvironmentEnum l_type = l_tile.Type;
+            if (l_count.ContainsKey(l_type))
             {
-               l_count[l_tile.Type]++;
+               l_count[l_type]++;
+
+               if (l_count[l_type] > l_count[(EnvironmentEnum) l_majority])
+               {
+                  l_majority = (int) l_type;
+               }
             }
             else
             {
-               l_count[l_tile.Type] = 1;
+               l_count[l_type] = 1;
+
+               if (l_majority == -1)
+               {
+                  l_majority = (int) l_type;
+               }
             }
          }
 
-         return (int) l_count.Aggregate((x, y) => x.Value > y.Value ? x : y).Key;
+         return l_majority;
       }
 
       private EnvironmentEnum RandomTileType(List<TileBehaviour> p_tiles)
@@ -158,7 +182,7 @@ namespace Managers.Spawners
 
          if(p_tiles.Count != 0)
          {
-            EnvironmentEnum l_lastType = p_tiles.Last().Type;
+            EnvironmentEnum l_lastType = p_tiles[p_tiles.Count - 1].Type;
             l_envId = RandomIntHelper.GetRandomValue((int)l_lastType, TileTypeMajority(p_tiles), l_enumSize);
          }
 
