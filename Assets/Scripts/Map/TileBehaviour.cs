@@ -3,7 +3,6 @@ using Behaviours.Interactables;
 using Managers;
 using Managers.Spawners;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Behaviours
@@ -133,7 +132,7 @@ namespace Behaviours
 
                List<TileBehaviour> l_tiles = MapManagerSingleton.GetInstance().Tiles;
 
-               if (l_tiles.Last() == this)
+               if (l_tiles[l_tiles.Count-1] == this)
                {
                   l_tileSpawner.TimeBeforeSpawn -= l_distance;
                }
@@ -147,7 +146,7 @@ namespace Behaviours
                if (l_player.GetComponent<SpriteRenderer>().bounds.min.x > l_bounds.min.x)
                {
                   float l_travelledDistance = l_player.GetComponent<SpriteRenderer>().bounds.min.x - l_bounds.min.x;
-                  ScoreManagerSingleton.GetInstance().OnTravelled().Invoke(l_travelledDistance );
+                  ScoreManagerSingleton.GetInstance().OnTravelled().Invoke(l_travelledDistance);
                }
 
                Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
