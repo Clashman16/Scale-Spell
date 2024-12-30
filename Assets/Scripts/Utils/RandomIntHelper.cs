@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace Utils
@@ -40,10 +41,20 @@ namespace Utils
       public static int GetRandomValueOutsideList(List<int> p_list, int p_count)
       {
          int l_returnValue = p_list[0];
+         Stopwatch l_stopwatch = Stopwatch.StartNew();
 
-         while(p_list.Contains(l_returnValue))
+         while (p_list.Contains(l_returnValue))
          {
             l_returnValue = Random.Range(0, p_count);
+
+            if (l_stopwatch.ElapsedMilliseconds > 1000)
+            {
+               l_stopwatch.Stop();
+               if(p_list.Contains(l_returnValue))
+               {
+                  p_list.Remove(l_returnValue);
+               }
+            }
          }
 
          return l_returnValue;
