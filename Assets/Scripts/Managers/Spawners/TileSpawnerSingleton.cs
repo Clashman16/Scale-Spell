@@ -9,9 +9,6 @@ namespace Managers.Spawners
 {
    public sealed class TileSpawnerSingleton
    {
-      private EnvironmentEnum m_newTileType;
-      private int m_newLength;
-
       private ObstacleSpawner m_obstacleSpawner;
 
       private float m_timeBeforeSpawn;
@@ -32,8 +29,6 @@ namespace Managers.Spawners
 
       private TileSpawnerSingleton()
       {
-         m_newTileType = EnvironmentEnum.NONE;
-         m_newLength = 0;
          m_obstacleSpawner = new ObstacleSpawner();
       }
 
@@ -55,8 +50,8 @@ namespace Managers.Spawners
 
          GameObject l_instantiatedTile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
 
-         m_newTileType = RandomTileType(l_tiles);
-         m_newLength = RandomLength(l_tiles);
+         EnvironmentEnum l_newTileType = RandomTileType(l_tiles);
+         int l_newLength = RandomLength(l_tiles);
 
          TileBehaviour l_lastTile = null;
          if(l_tiles.Count > 0)
@@ -65,10 +60,10 @@ namespace Managers.Spawners
          }
 
          bool l_hasObstacle = (l_tiles.Count % 3 == 0 || l_tiles.Count % 5 == 0) && l_lastTile != null && !l_lastTile.HasObstacle &&
-                              m_newTileType != EnvironmentEnum.SAND;
+                              l_newTileType != EnvironmentEnum.SAND;
 
          TileBehaviour l_newTile = l_instantiatedTile.GetComponent<TileBehaviour>();
-         l_newTile.Init(m_newTileType, m_newLength, l_hasObstacle);
+         l_newTile.Init(l_newTileType, l_newLength, l_hasObstacle);
 
          float l_tileWidth = l_instantiatedTile.GetComponent<Transform>().lossyScale.x;
 
@@ -90,7 +85,7 @@ namespace Managers.Spawners
 
          if (l_hasObstacle)
          {
-            m_obstacleSpawner.Spawn(l_instantiatedTile.transform, m_newTileType, l_lastTile);
+            m_obstacleSpawner.Spawn(l_instantiatedTile.transform, l_newTileType, l_lastTile);
          }
 
          l_tiles.Add(l_newTile);
