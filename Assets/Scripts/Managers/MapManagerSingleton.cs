@@ -1,6 +1,8 @@
+using Behaviours.Characters;
 using Behaviours.Map;
 using Managers.Spawners;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Managers
 {
@@ -26,11 +28,19 @@ namespace Managers
          get => m_obstaclesFlying;
       }
 
+      private PlayerBehaviour m_player;
+
+      public PlayerBehaviour Player
+      {
+         get => m_player;
+      }
+
       private MapManagerSingleton()
       {
          m_tiles = new List<TileBehaviour>();
          m_obstaclesGrounded = new List<ObstacleGroundedBehaviour>();
          m_obstaclesFlying = new List<ObstacleFlyingBehaviour>();
+         m_player = Object.FindObjectOfType<PlayerBehaviour>();
       }
 
       private static MapManagerSingleton m_instance = null;

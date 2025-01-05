@@ -130,7 +130,8 @@ namespace Behaviours
 
                TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.GetInstance();
 
-               List<TileBehaviour> l_tiles = MapManagerSingleton.GetInstance().Tiles;
+               MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+               List<TileBehaviour> l_tiles = l_mapManager.Tiles;
 
                if (l_tiles[l_tiles.Count-1] == this)
                {
@@ -142,7 +143,7 @@ namespace Behaviours
 
                Bounds l_bounds = GetComponent<SpriteRenderer>().bounds;
 
-               PlayerBehaviour l_player = FindObjectOfType<PlayerBehaviour>();
+               PlayerBehaviour l_player = l_mapManager.Player;
                if (l_player.GetComponent<SpriteRenderer>().bounds.min.x > l_bounds.min.x)
                {
                   float l_travelledDistance = l_player.GetComponent<SpriteRenderer>().bounds.min.x - l_bounds.min.x;

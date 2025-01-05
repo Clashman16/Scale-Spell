@@ -2,7 +2,6 @@ using Behaviours.Characters;
 using Behaviours.Map;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Utils;
 
 namespace Managers.Spawners.Utils
@@ -134,7 +133,7 @@ namespace Managers.Spawners.Utils
 
          if(p_prefabName == "Clouds" || p_prefabName == "Pyramid")
          {
-            PlayerBehaviour l_player = Object.FindObjectOfType<PlayerBehaviour>();
+            PlayerBehaviour l_player = MapManagerSingleton.GetInstance().Player;
             Vector3 l_playerPosition = l_player.transform.position;
             float l_playerScreenY = Camera.main.WorldToScreenPoint(l_playerPosition).y;
 

@@ -30,7 +30,7 @@ namespace Managers.Spawners
          l_obstacles.AddRange(l_obstaclesFlying);
 
          ObstacleBehaviour l_obstacle;
-         PlayerBehaviour l_player = Object.FindObjectOfType<PlayerBehaviour>();
+         PlayerBehaviour l_player = l_mapManager.Player;
 
          string l_prefabName;
 
