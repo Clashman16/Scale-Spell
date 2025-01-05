@@ -2,6 +2,7 @@ using Behaviours.Map;
 using Behaviours.UI;
 using Managers;
 using Managers.Spawners;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -99,8 +100,13 @@ namespace Utils.Callbacks
 
       public static void OnShieldTimerStartedOrFinished(bool p_hasShield)
       {
-         ObstacleGroundBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
-         foreach (ObstacleGroundBehaviour l_obstacle in l_obstacles)
+         MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+         List<ObstacleGroundedBehaviour> l_obstaclesGrounded = l_mapManager.ObstaclesGrounded;
+         List<ObstacleFlyingBehaviour> l_obstaclesFlying = l_mapManager.ObstaclesFlying;
+         List<ObstacleBehaviour> l_obstacles = new List<ObstacleBehaviour>();
+         l_obstacles.AddRange(l_obstaclesGrounded);
+         l_obstacles.AddRange(l_obstaclesFlying);
+         foreach (ObstacleBehaviour l_obstacle in l_obstacles)
          {
             l_obstacle.EnableCollider(p_hasShield);
          }

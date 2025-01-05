@@ -14,16 +14,23 @@ namespace Managers
          get => m_tiles;
       }
 
-      private List<ObstacleGroundBehaviour> m_obstacles;
-      public List<ObstacleGroundBehaviour> Obstacles
+      private List<ObstacleGroundedBehaviour> m_obstaclesGrounded;
+      public List<ObstacleGroundedBehaviour> ObstaclesGrounded
       {
-         get => m_obstacles;
+         get => m_obstaclesGrounded;
+      }
+
+      private List<ObstacleFlyingBehaviour> m_obstaclesFlying;
+      public List<ObstacleFlyingBehaviour> ObstaclesFlying
+      {
+         get => m_obstaclesFlying;
       }
 
       private MapManagerSingleton()
       {
          m_tiles = new List<TileBehaviour>();
-         m_obstacles = new List<ObstacleGroundBehaviour>();
+         m_obstaclesGrounded = new List<ObstacleGroundedBehaviour>();
+         m_obstaclesFlying = new List<ObstacleFlyingBehaviour>();
       }
 
       private static MapManagerSingleton m_instance = null;

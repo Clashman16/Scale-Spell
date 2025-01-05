@@ -7,7 +7,7 @@ namespace Behaviours
 {
    namespace Map
    {
-      public class ObstacleGroundBehaviour : ScalablePartBehaviour
+      public class ObstacleGroundedBehaviour : ObstacleBehaviour
       {
          private ObstacleType m_type;
 
@@ -23,11 +23,33 @@ namespace Behaviours
             get => m_isBig;
          }
 
-         private void Start()
+         public override void Start()
          {
+            IsFlying = false;
             MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
-            List<ObstacleGroundBehaviour> l_obstacles = l_mapManager.Obstacles;
+            List<ObstacleGroundedBehaviour> l_obstacles = l_mapManager.ObstaclesGrounded;
             l_obstacles.Add(this);
+         }
+
+         public override void Update()
+         {
+            if (GameStateManager.State == GameStateEnum.PLAYING)
+            {
+               Vector3 l_position = transform.position;
+
+               float l_distance = Time.deltaTime;
+
+               l_position.x -= l_distance;
+               transform.position = l_position;
+
+               Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+
+               if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<SpriteRenderer>().bounds))
+               {
+                  MapManagerSingleton.GetInstance().ObstaclesGrounded.Remove(this);
+                  DestroyImmediate(gameObject);
+               }
+            }
          }
 
          public void Init(ObstacleType p_obstacleType, bool p_isBig, string p_spritePath)
@@ -121,7 +143,7 @@ namespace Behaviours
             }
          }
 
-         public void EnableCollider(bool p_enable)
+         public override void EnableCollider(bool p_enable)
          {
             Collider2D l_collider = GetComponent<Collider2D>();
 
@@ -141,27 +163,6 @@ namespace Behaviours
             if (l_collider != null)
             {
                l_collider.enabled = p_enable;
-            }
-         }
-
-         private void Update()
-         {
-            if (GameStateManager.State == GameStateEnum.PLAYING)
-            {
-               Vector3 l_position = transform.position;
-
-               float l_distance = Time.deltaTime;
-
-               l_position.x -= l_distance;
-               transform.position = l_position;
-
-               Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-
-               if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<SpriteRenderer>().bounds))
-               {
-                  MapManagerSingleton.GetInstance().Obstacles.Remove(this);
-                  DestroyImmediate(gameObject);
-               }
             }
          }
       }
