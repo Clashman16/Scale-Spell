@@ -28,6 +28,12 @@ namespace Managers
          get => m_obstaclesFlying;
       }
 
+      private List<CloudBehaviour> m_clouds;
+      public List<CloudBehaviour> Clouds
+      {
+         get => m_clouds;
+      }
+
       private PlayerBehaviour m_player;
 
       public PlayerBehaviour Player
@@ -40,6 +46,7 @@ namespace Managers
          m_tiles = new List<TileBehaviour>();
          m_obstaclesGrounded = new List<ObstacleGroundedBehaviour>();
          m_obstaclesFlying = new List<ObstacleFlyingBehaviour>();
+         m_clouds = new List<CloudBehaviour>();
          m_player = Object.FindObjectOfType<PlayerBehaviour>();
       }
 

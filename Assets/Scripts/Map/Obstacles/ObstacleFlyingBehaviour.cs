@@ -1,3 +1,4 @@
+using Behaviours.Characters;
 using Managers;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,7 +38,15 @@ namespace Behaviours
 
                if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<SpriteRenderer>().bounds))
                {
-                  MapManagerSingleton.GetInstance().ObstaclesFlying.Remove(this);
+                  MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+                  l_mapManager.ObstaclesFlying.Remove(this);
+
+                  CloudBehaviour l_cloud = GetComponent<CloudBehaviour>();
+                  if (l_cloud != null)
+                  {
+                     l_mapManager.Clouds.Remove(l_cloud);
+                  }
+
                   DestroyImmediate(gameObject);
                }
             }
