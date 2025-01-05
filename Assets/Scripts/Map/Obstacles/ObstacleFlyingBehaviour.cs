@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Behaviours
 {
-   namespace Map
+   namespace Map.Obstacles
    {
       public class ObstacleFlyingBehaviour : ObstacleBehaviour
       {

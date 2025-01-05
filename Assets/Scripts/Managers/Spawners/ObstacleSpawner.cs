@@ -1,5 +1,6 @@
 using Behaviours.Characters;
 using Behaviours.Map;
+using Behaviours.Map.Obstacles;
 using Managers.Spawners.Utils;
 using System.Collections.Generic;
 using System.IO;

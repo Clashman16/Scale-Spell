@@ -1,4 +1,5 @@
 using Behaviours.Map;
+using Behaviours.Map.Obstacles;
 using System;
 using System.Collections.Generic;
 using System.Linq;

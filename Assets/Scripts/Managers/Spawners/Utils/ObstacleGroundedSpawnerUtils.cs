@@ -1,4 +1,5 @@
 using Behaviours.Map;
+using Behaviours.Map.Obstacles;
 using System.Collections.Generic;
 using UnityEngine;
 using Utils;

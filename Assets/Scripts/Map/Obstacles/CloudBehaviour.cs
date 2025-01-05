@@ -5,7 +5,7 @@ using Utils;
 
 namespace Behaviours
 {
-   namespace Map
+   namespace Map.Obstacles
    {
       public class CloudBehaviour : MonoBehaviour
       {

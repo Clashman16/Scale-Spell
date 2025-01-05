@@ -1,4 +1,4 @@
-using Behaviours.Map;
+using Behaviours.Map.Obstacles;
 using Behaviours.UI;
 using Managers;
 using Managers.Spawners;
