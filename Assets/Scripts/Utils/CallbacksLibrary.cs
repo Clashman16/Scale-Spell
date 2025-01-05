@@ -99,8 +99,8 @@ namespace Utils.Callbacks
 
       public static void OnShieldTimerStartedOrFinished(bool p_hasShield)
       {
-         ObstacleBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
-         foreach (ObstacleBehaviour l_obstacle in l_obstacles)
+         ObstacleGroundBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
+         foreach (ObstacleGroundBehaviour l_obstacle in l_obstacles)
          {
             l_obstacle.EnableCollider(p_hasShield);
          }

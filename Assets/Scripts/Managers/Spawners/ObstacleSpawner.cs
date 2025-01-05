@@ -21,7 +21,7 @@ namespace Managers.Spawners
 
       internal void Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour p_lastTile)
       {
-         List<ObstacleBehaviour> l_obstacles = MapManagerSingleton.GetInstance().Obstacles;
+         List<ObstacleGroundBehaviour> l_obstacles = MapManagerSingleton.GetInstance().Obstacles;
          ObstacleType l_obstacleType = RandomObstacleType(l_obstacles);
          bool l_isBig = RandomSize(p_tileTransform, l_obstacles);
          string l_prefabName = GetPrefabName(l_isBig, p_tileType);
@@ -45,7 +45,7 @@ namespace Managers.Spawners
          string l_spriteName = l_prefabName.ToLower();
          l_spriteName = l_spriteName.Replace(" ", "-");
 
-         ObstacleBehaviour l_obstacle = l_spawnedObject.GetComponent<ObstacleBehaviour>();
+         ObstacleGroundBehaviour l_obstacle = l_spawnedObject.GetComponent<ObstacleGroundBehaviour>();
          l_obstacle.Init(l_obstacleType, l_isBig, Path.Combine(m_spritesPath, l_spriteName));
 
          if(l_player.HasShield)
@@ -97,12 +97,12 @@ namespace Managers.Spawners
          return l_y;
       }
 
-      private int ObstacleSizeMajority(List<ObstacleBehaviour> p_obstacles)
+      private int ObstacleSizeMajority(List<ObstacleGroundBehaviour> p_obstacles)
       {
          Dictionary<int, int> l_count = new Dictionary<int, int>();
          int l_majority = -1;
 
-         foreach (ObstacleBehaviour l_obstacle in p_obstacles)
+         foreach (ObstacleGroundBehaviour l_obstacle in p_obstacles)
          {
             int l_isBigId = l_obstacle.IsBig ? 1 : 0;
 
@@ -130,7 +130,7 @@ namespace Managers.Spawners
       }
 
 
-      private bool RandomSize(Transform p_tileTransform, List<ObstacleBehaviour> p_obstacles)
+      private bool RandomSize(Transform p_tileTransform, List<ObstacleGroundBehaviour> p_obstacles)
       {
          int p_length = (int) p_tileTransform.localScale.x;
 
@@ -152,12 +152,12 @@ namespace Managers.Spawners
          return l_isBigId == 0 ? false : true;
       }
 
-      private int ObstacleTypeMajority(List<ObstacleBehaviour> p_obstacles)
+      private int ObstacleTypeMajority(List<ObstacleGroundBehaviour> p_obstacles)
       {
          Dictionary<ObstacleType, int> l_count = new Dictionary<ObstacleType, int>();
          int l_majority = -1;
 
-         foreach (ObstacleBehaviour l_obstacle in p_obstacles)
+         foreach (ObstacleGroundBehaviour l_obstacle in p_obstacles)
          {
             ObstacleType l_type = l_obstacle.Type;
             if (l_count.ContainsKey(l_type))
@@ -183,7 +183,7 @@ namespace Managers.Spawners
          return l_majority;
       }
 
-      private ObstacleType RandomObstacleType(List<ObstacleBehaviour> p_obstacles)
+      private ObstacleType RandomObstacleType(List<ObstacleGroundBehaviour> p_obstacles)
       {
          int l_envId;
          int l_enumSize = 3;

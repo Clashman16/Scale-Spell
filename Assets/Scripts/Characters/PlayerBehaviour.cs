@@ -115,8 +115,8 @@ namespace Behaviours
             GameObject l_gameObject = p_collision.gameObject;
             if (!m_hasShield && !l_gameObject.GetComponent<RulerBehaviour>() &&
                                  (l_gameObject.GetComponent<TileBehaviour>() ||
-                                 l_gameObject.GetComponent<ObstacleBehaviour>() ||
-                                 l_gameObject.GetComponentInParent<ObstacleBehaviour>()))
+                                 l_gameObject.GetComponent<ObstacleGroundBehaviour>() ||
+                                 l_gameObject.GetComponentInParent<ObstacleGroundBehaviour>()))
             {
                m_loose.Invoke();
                m_loose -= CallbacksLibrary.OnPlayerLoose;

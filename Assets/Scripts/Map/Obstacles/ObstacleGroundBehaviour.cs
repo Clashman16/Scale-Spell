@@ -7,7 +7,7 @@ namespace Behaviours
 {
    namespace Map
    {
-      public class ObstacleBehaviour : ScalablePartBehaviour
+      public class ObstacleGroundBehaviour : ScalablePartBehaviour
       {
          private ObstacleType m_type;
 
@@ -26,7 +26,7 @@ namespace Behaviours
          private void Start()
          {
             MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
-            List<ObstacleBehaviour> l_obstacles = l_mapManager.Obstacles;
+            List<ObstacleGroundBehaviour> l_obstacles = l_mapManager.Obstacles;
             l_obstacles.Add(this);
          }
 

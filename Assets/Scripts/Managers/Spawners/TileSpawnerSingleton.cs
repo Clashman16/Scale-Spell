@@ -76,7 +76,7 @@ namespace Managers.Spawners
 
          Bounds l_tileBound = l_instantiatedTile.GetComponent<SpriteRenderer>().bounds;
 
-         ObstacleBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
+         ObstacleGroundBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
          if (l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
          {
             l_hasObstacle = false;

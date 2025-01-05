@@ -14,8 +14,8 @@ namespace Managers
          get => m_tiles;
       }
 
-      private List<ObstacleBehaviour> m_obstacles;
-      public List<ObstacleBehaviour> Obstacles
+      private List<ObstacleGroundBehaviour> m_obstacles;
+      public List<ObstacleGroundBehaviour> Obstacles
       {
          get => m_obstacles;
       }
@@ -23,7 +23,7 @@ namespace Managers
       private MapManagerSingleton()
       {
          m_tiles = new List<TileBehaviour>();
-         m_obstacles = new List<ObstacleBehaviour>();
+         m_obstacles = new List<ObstacleGroundBehaviour>();
       }
 
       private static MapManagerSingleton m_instance = null;
