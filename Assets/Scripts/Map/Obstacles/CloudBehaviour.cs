@@ -5,7 +5,7 @@ using Utils;
 
 namespace Behaviours
 {
-   namespace Characters
+   namespace Map
    {
       public class CloudBehaviour : MonoBehaviour
       {
