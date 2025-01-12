@@ -28,6 +28,8 @@ namespace Utils.Callbacks
       {
          SceneManager.LoadScene("Level", LoadSceneMode.Single);
          GameStateManager.State = GameStateEnum.PLAYING;
+         ScoreManagerSingleton.Reset();
+         MapManagerSingleton.Reset();
       }
 
       public static void GoToTitlescreen()
