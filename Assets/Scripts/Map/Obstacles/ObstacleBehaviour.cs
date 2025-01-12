@@ -1,7 +1,4 @@
 using Behaviours.Interactables;
-using Managers;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Behaviours
 {
