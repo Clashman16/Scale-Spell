@@ -1,5 +1,7 @@
 using Behaviours.Characters;
 using Behaviours.Map;
+using Behaviours.Map.Obstacles;
+using Managers.Spawners.Utils;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -21,32 +23,69 @@ namespace Managers.Spawners
 
       internal void Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType, TileBehaviour p_lastTile)
       {
-         List<ObstacleBehaviour> l_obstacles = MapManagerSingleton.GetInstance().Obstacles;
-         ObstacleType l_obstacleType = RandomObstacleType(l_obstacles);
-         bool l_isBig = RandomSize(p_tileTransform, l_obstacles);
-         string l_prefabName = GetPrefabName(l_isBig, p_tileType);
+         MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+         List<ObstacleGroundedBehaviour> l_obstaclesGrounded = l_mapManager.ObstaclesGrounded;
+         List<ObstacleFlyingBehaviour> l_obstaclesFlying = l_mapManager.ObstaclesFlying;
+         List<ObstacleBehaviour> l_obstacles = new List<ObstacleBehaviour>();
+         l_obstacles.AddRange(l_obstaclesGrounded);
+         l_obstacles.AddRange(l_obstaclesFlying);
 
-         int l_travelledDistance = Mathf.RoundToInt(ScoreManagerSingleton.GetInstance().TravelledDistance);
-         PlayerBehaviour l_player = Object.FindObjectOfType<PlayerBehaviour>();
-         bool l_hasObstacle = p_lastTile != null && !p_lastTile.HasObstacle;
+         ObstacleBehaviour l_obstacle;
+         PlayerBehaviour l_player = l_mapManager.Player;
 
-         if (!l_player.HasShield && l_obstacleType == ObstacleType.HARMFUL && l_hasObstacle && (l_travelledDistance % 5 == 0 || l_travelledDistance % 10 == 0))
+         string l_prefabName;
+
+         bool l_isFlying = RandomIsFlyingInstance(l_obstacles);
+
+         if(l_isFlying)
          {
-            m_potionSpawner.Spawn(p_lastTile.transform);
+            ObstacleFlyingSpawnerUtils l_utils = new ObstacleFlyingSpawnerUtils();
+
+            bool l_withBullet = l_utils.RandomWithBullet(l_obstaclesFlying);
+            bool l_isCloud = l_utils.RandomIsCloud(l_obstaclesFlying);
+            l_prefabName = l_utils.GetPrefabName(l_isCloud, p_tileType);
+
+            GameObject l_spawnedObject = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(m_prefabsPath, l_prefabName)));
+
+            Vector3 l_position = l_spawnedObject.transform.position;
+            l_position.x = p_tileTransform.transform.position.x;
+            l_position.y = l_utils.GetYCoordinate(l_prefabName);
+            l_spawnedObject.transform.position = l_position;
+
+            ObstacleFlyingBehaviour l_obstacleFlying = l_spawnedObject.GetComponent<ObstacleFlyingBehaviour>();
+            l_obstacleFlying.Init(l_withBullet);
+            l_obstacle = l_obstacleFlying;
          }
+         else
+         {
+            ObstacleGroundedSpawnerUtils l_utils = new ObstacleGroundedSpawnerUtils();
 
-         GameObject l_spawnedObject = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(m_prefabsPath, l_prefabName)));
+            bool l_isBig = l_utils.RandomSize(p_tileTransform, l_obstaclesGrounded);
+            ObstacleType l_obstacleType = l_utils.RandomObstacleType(l_obstaclesGrounded);
 
-         Vector3 l_position = l_spawnedObject.transform.position;
-         l_position.x = p_tileTransform.transform.position.x;
-         l_position.y = GetYCoordinate(l_prefabName);
-         l_spawnedObject.transform.position = l_position;
+            int l_travelledDistance = Mathf.RoundToInt(ScoreManagerSingleton.GetInstance().TravelledDistance);
+            bool l_hasObstacle = p_lastTile != null && !p_lastTile.HasObstacle;
+            if (!l_player.HasShield && l_obstacleType == ObstacleType.HARMFUL && l_hasObstacle && (l_travelledDistance % 5 == 0 || l_travelledDistance % 10 == 0))
+            {
+               m_potionSpawner.Spawn(p_lastTile.transform);
+            }
 
-         string l_spriteName = l_prefabName.ToLower();
-         l_spriteName = l_spriteName.Replace(" ", "-");
+            l_prefabName = l_utils.GetPrefabName(l_isBig, p_tileType);
 
-         ObstacleBehaviour l_obstacle = l_spawnedObject.GetComponent<ObstacleBehaviour>();
-         l_obstacle.Init(l_obstacleType, l_isBig, Path.Combine(m_spritesPath, l_spriteName));
+            GameObject l_spawnedObject = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(m_prefabsPath, l_prefabName)));
+
+            Vector3 l_position = l_spawnedObject.transform.position;
+            l_position.x = p_tileTransform.transform.position.x;
+            l_position.y = l_utils.GetYCoordinate(l_prefabName);
+            l_spawnedObject.transform.position = l_position;
+
+            string l_spriteName = l_prefabName.ToLower();
+            l_spriteName = l_spriteName.Replace(" ", "-");
+
+            ObstacleGroundedBehaviour l_obstacleGrounded = l_spawnedObject.GetComponent<ObstacleGroundedBehaviour>();
+            l_obstacleGrounded.Init(l_obstacleType, l_isBig, Path.Combine(m_spritesPath, l_spriteName));
+            l_obstacle = l_obstacleGrounded;
+         }
 
          if(l_player.HasShield)
          {
@@ -54,74 +93,31 @@ namespace Managers.Spawners
          }
       }
 
-      private string GetPrefabName(bool p_isBig, EnvironmentEnum p_tileType)
-      {
-         string l_prefabName = p_isBig ? "Big" : "Little";
-         l_prefabName += " ";
-
-         switch (p_tileType)
-         {
-            case EnvironmentEnum.GRASS:
-               l_prefabName += "Tree";
-               break;
-            case EnvironmentEnum.BRICKS:
-               l_prefabName += "Tower";
-               break;
-         }
-
-         return l_prefabName;
-      }
-
-      private float GetYCoordinate(string p_prefabName)
-      {
-         float l_y;
-
-         switch (p_prefabName)
-         {
-            case "Big Tree":
-               l_y = -1.15f;
-               break;
-            case "Little Tree":
-               l_y = -0.85f;
-               break;
-            case "Big Tower":
-               l_y = -0.75f;
-               break;
-            case "Little Tower":
-               l_y = -1.62f;
-               break;
-            default:
-               l_y = -0.05f;
-               break;
-         }
-         return l_y;
-      }
-
-      private int ObstacleSizeMajority(List<ObstacleBehaviour> p_obstacles)
+      private int IsFlyingInstanceMajority(List<ObstacleBehaviour> p_obstacles)
       {
          Dictionary<int, int> l_count = new Dictionary<int, int>();
          int l_majority = -1;
 
          foreach (ObstacleBehaviour l_obstacle in p_obstacles)
          {
-            int l_isBigId = l_obstacle.IsBig ? 1 : 0;
+            int l_isFlyingId = l_obstacle.IsFlying ? 1 : 0;
 
-            if (l_count.ContainsKey(l_isBigId))
+            if (l_count.ContainsKey(l_isFlyingId))
             {
-               l_count[l_isBigId]++;
+               l_count[l_isFlyingId]++;
 
-               if (l_count[l_isBigId] > l_count[l_majority])
+               if (l_count[l_isFlyingId] > l_count[l_majority])
                {
-                  l_majority = l_isBigId;
+                  l_majority = l_isFlyingId;
                }
             }
             else
             {
-               l_count[l_isBigId] = 1;
+               l_count[l_isFlyingId] = 1;
 
                if (l_majority == -1)
                {
-                  l_majority = l_isBigId;
+                  l_majority = l_isFlyingId;
                }
             }
          }
@@ -129,97 +125,19 @@ namespace Managers.Spawners
          return l_majority;
       }
 
-
-      private bool RandomSize(Transform p_tileTransform, List<ObstacleBehaviour> p_obstacles)
+      private bool RandomIsFlyingInstance(List<ObstacleBehaviour> p_obstacles)
       {
-         int p_length = (int) p_tileTransform.localScale.x;
+         int l_maxIsFlyingExclusive = 2;
 
-         int l_isBigId = p_length <= 2 ? 0 : 1;
+         int l_isFlyingId = Random.Range(0, l_maxIsFlyingExclusive);
 
-         if (l_isBigId == 1)
+         if (p_obstacles.Count != 0)
          {
-            int l_maxLengthExclusive = 2;
-
-            l_isBigId = Random.Range(0, l_maxLengthExclusive);
-
-            if (p_obstacles.Count != 0)
-            {
-               int l_lastIsBigId = p_obstacles[p_obstacles.Count - 1].IsBig ? 1 : 0;
-               l_isBigId = RandomIntHelper.GetRandomValue(l_lastIsBigId, ObstacleSizeMajority(p_obstacles), l_maxLengthExclusive);
-            }
+            int l_lastIsBigId = p_obstacles[p_obstacles.Count - 1].IsFlying ? 1 : 0;
+            l_isFlyingId = RandomIntHelper.GetRandomValue(l_lastIsBigId, IsFlyingInstanceMajority(p_obstacles), l_maxIsFlyingExclusive);
          }
 
-         return l_isBigId == 0 ? false : true;
-      }
-
-      private int ObstacleTypeMajority(List<ObstacleBehaviour> p_obstacles)
-      {
-         Dictionary<ObstacleType, int> l_count = new Dictionary<ObstacleType, int>();
-         int l_majority = -1;
-
-         foreach (ObstacleBehaviour l_obstacle in p_obstacles)
-         {
-            ObstacleType l_type = l_obstacle.Type;
-            if (l_count.ContainsKey(l_type))
-            {
-               l_count[l_obstacle.Type]++;
-
-               if (l_count[l_type] > l_count[(ObstacleType)l_majority])
-               {
-                  l_majority = (int)l_type;
-               }
-            }
-            else
-            {
-               l_count[l_type] = 1;
-
-               if (l_majority == -1)
-               {
-                  l_majority = (int)l_type;
-               }
-            }
-         }
-
-         return l_majority;
-      }
-
-      private ObstacleType RandomObstacleType(List<ObstacleBehaviour> p_obstacles)
-      {
-         int l_envId;
-         int l_enumSize = 3;
-
-         ScoreManagerSingleton l_scoreManager = ScoreManagerSingleton.GetInstance();
-         float l_increasePotionQuantity = l_scoreManager.IncreasePotionQuantity;
-         float l_decreasePotionQuantity = l_scoreManager.DecreasePotionQuantity;
-
-         if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < 0.5 ||
-                 ScoreManagerSingleton.GetInstance().DecreasePotionQuantity < 0.5)
-         {
-            if (l_increasePotionQuantity > l_decreasePotionQuantity)
-            {
-               l_envId = Random.Range(1, l_enumSize);
-            }
-            else if (l_increasePotionQuantity < l_decreasePotionQuantity)
-            {
-               l_envId = (int) ObstacleType.HARMFUL;
-            }
-            else
-            {
-               l_envId = (int)ObstacleType.INBETWEEN;
-            }
-         }
-         else
-         {
-            l_envId = Random.Range(0, l_enumSize);
-
-            if (p_obstacles.Count != 0)
-            {
-               ObstacleType l_lastType = p_obstacles[p_obstacles.Count - 1].Type;
-               l_envId = RandomIntHelper.GetRandomValue((int)l_lastType, ObstacleTypeMajority(p_obstacles), l_enumSize);
-            }
-         }
-
-         return (ObstacleType) l_envId;
+         return l_isFlyingId == 0 ? false : true;
       }
    }
 }

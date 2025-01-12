@@ -11,7 +11,7 @@ namespace Managers.Spawners
       {
          GameObject l_potion = Object.Instantiate(Resources.Load<GameObject>(m_prefabsPath));
 
-         PlayerBehaviour l_player = Object.FindObjectOfType<PlayerBehaviour>();
+         PlayerBehaviour l_player = MapManagerSingleton.GetInstance().Player;
          if (CloseToPlayer())
          {
             l_potion.transform.position = new Vector3(p_tileTransform.position.x, l_player.transform.position.y, p_tileTransform.position.z);

@@ -1,6 +1,7 @@
 using System;
 using Behaviours.Interactables;
 using Behaviours.Map;
+using Behaviours.Map.Obstacles;
 using Behaviours.UI;
 using Managers;
 using UnityEngine;

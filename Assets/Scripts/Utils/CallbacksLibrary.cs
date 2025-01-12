@@ -1,7 +1,8 @@
-using Behaviours.Map;
+using Behaviours.Map.Obstacles;
 using Behaviours.UI;
 using Managers;
 using Managers.Spawners;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine.SceneManagement;
 
@@ -27,6 +28,8 @@ namespace Utils.Callbacks
       {
          SceneManager.LoadScene("Level", LoadSceneMode.Single);
          GameStateManager.State = GameStateEnum.PLAYING;
+         ScoreManagerSingleton.Reset();
+         MapManagerSingleton.Reset();
       }
 
       public static void GoToTitlescreen()
@@ -99,7 +102,12 @@ namespace Utils.Callbacks
 
       public static void OnShieldTimerStartedOrFinished(bool p_hasShield)
       {
-         ObstacleBehaviour[] l_obstacles = MapManagerSingleton.GetInstance().Obstacles.ToArray();
+         MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+         List<ObstacleGroundedBehaviour> l_obstaclesGrounded = l_mapManager.ObstaclesGrounded;
+         List<ObstacleFlyingBehaviour> l_obstaclesFlying = l_mapManager.ObstaclesFlying;
+         List<ObstacleBehaviour> l_obstacles = new List<ObstacleBehaviour>();
+         l_obstacles.AddRange(l_obstaclesGrounded);
+         l_obstacles.AddRange(l_obstaclesFlying);
          foreach (ObstacleBehaviour l_obstacle in l_obstacles)
          {
             l_obstacle.EnableCollider(p_hasShield);
