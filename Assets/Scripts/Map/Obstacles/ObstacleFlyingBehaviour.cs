@@ -14,9 +14,13 @@ namespace Behaviours
          {
             get => m_withBullet;
          }
+
+         private bool m_canBeDestroyed;
+
          public override void Start()
          {
             IsFlying = true;
+            m_canBeDestroyed = false;
             MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
             List<ObstacleFlyingBehaviour> l_obstacles = l_mapManager.ObstaclesFlying;
             l_obstacles.Add(this);
@@ -37,16 +41,23 @@ namespace Behaviours
 
                if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<SpriteRenderer>().bounds))
                {
-                  MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
-                  l_mapManager.ObstaclesFlying.Remove(this);
-
-                  CloudBehaviour l_cloud = GetComponent<CloudBehaviour>();
-                  if (l_cloud != null)
+                  if(m_canBeDestroyed)
                   {
-                     l_mapManager.Clouds.Remove(l_cloud);
-                  }
+                     MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+                     l_mapManager.ObstaclesFlying.Remove(this);
 
-                  DestroyImmediate(gameObject);
+                     CloudBehaviour l_cloud = GetComponent<CloudBehaviour>();
+                     if (l_cloud != null)
+                     {
+                        l_mapManager.Clouds.Remove(l_cloud);
+                     }
+
+                     DestroyImmediate(gameObject);
+                  }
+               }
+               else if(!m_canBeDestroyed)
+               {
+                  m_canBeDestroyed = true;
                }
             }
          }
