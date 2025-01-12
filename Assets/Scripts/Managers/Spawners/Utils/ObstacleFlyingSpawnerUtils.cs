@@ -130,17 +130,16 @@ namespace Managers.Spawners.Utils
 
       internal override float GetYCoordinate(string p_prefabName)
       {
-         float l_y = Screen.height / 2;
+         float l_y = 0;
 
-         if(p_prefabName == "Clouds" || p_prefabName == "Pyramid")
+         if (p_prefabName == "Clouds" || p_prefabName == "Pyramid")
          {
             PlayerBehaviour l_player = MapManagerSingleton.GetInstance().Player;
             Vector3 l_playerPosition = l_player.transform.position;
-            float l_playerScreenY = Camera.main.WorldToScreenPoint(l_playerPosition).y;
 
-            if(l_playerScreenY > l_y)
+            if(l_playerPosition.y > l_y)
             {
-               l_y = l_playerScreenY;
+               l_y = l_playerPosition.y;
             }
          }
 
