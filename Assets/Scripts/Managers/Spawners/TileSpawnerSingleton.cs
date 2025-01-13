@@ -67,13 +67,23 @@ namespace Managers.Spawners
          l_newTile.Init(l_newTileType, l_newLength, l_hasObstacle);
 
          float l_tileWidth = l_instantiatedTile.GetComponent<Transform>().lossyScale.x;
+         Vector3 l_spawnPosition;
 
-         Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
-         Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
-         Vector3 l_spawnPosition = l_worldPosition + new Vector3(l_tileWidth / 2, 0.5f, 0);
+         if (l_lastTile != null)
+         {
+            float l_lastTileWidth = l_lastTile.GetComponent<SpriteRenderer>().bounds.size.x;
+            l_spawnPosition = l_lastTile.transform.position + new Vector3(l_lastTileWidth / 2 + l_tileWidth / 2, 0, 0);
+         }
+         else
+         {
+            Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
+            Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
+            l_spawnPosition = l_worldPosition + new Vector3(-l_tileWidth / 2, 0.5f, 0);
+         }
+
          l_newTile.transform.position = l_spawnPosition;
 
-         m_timeBeforeSpawn = l_tileWidth;
+         m_timeBeforeSpawn = l_tileWidth*Time.deltaTime;
 
          Bounds l_tileBound = l_instantiatedTile.GetComponent<SpriteRenderer>().bounds;
 
