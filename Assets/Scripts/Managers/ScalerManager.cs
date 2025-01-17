@@ -47,7 +47,7 @@ namespace Managers
       {
          if(m_scalerGameObject != null)
          {
-            m_scalerGameObject.GetComponent<LineRenderer>().material.color = p_color;
+            m_scalerGameObject.GetComponent<LineRenderer>().material.SetColor("_MainColor", p_color);
          }
       }
    }

@@ -13,9 +13,9 @@ namespace Behaviours
 
          m_lineRenderer = GetComponent<LineRenderer>();
          
-         m_lineRenderer.material = new Material(Shader.Find("Standard"));
+         m_lineRenderer.material = new Material(Shader.Find("Custom/DashedLine"));
          m_lineRenderer.material.color = Color.gray;
-         
+
          m_lineRenderer.startWidth = 0.1f;
          m_lineRenderer.endWidth = 0.1f;
 
