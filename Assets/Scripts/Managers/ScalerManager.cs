@@ -1,4 +1,4 @@
-using Behaviours;
+using Behaviours.UI;
 using UnityEngine;
 
 namespace Managers
