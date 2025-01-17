@@ -37,6 +37,11 @@ namespace Behaviours
             }
          }
 
+         public Animator GetAnimator()
+         {
+            return GetComponent<Animator>();
+         }
+
          private void Start()
          {
             m_hasShield = false;

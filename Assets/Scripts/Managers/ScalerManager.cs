@@ -24,6 +24,7 @@ namespace Managers
          set
          {
             m_isRescaling = value;
+            MapManagerSingleton.GetInstance().Player.GetAnimator().SetBool("IsSpelling", m_isRescaling);
          }
       }
 
