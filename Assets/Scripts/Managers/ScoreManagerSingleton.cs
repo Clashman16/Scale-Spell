@@ -72,7 +72,5 @@ namespace Managers
       {
          m_instance = null;
       }
-
-
    }
 }
