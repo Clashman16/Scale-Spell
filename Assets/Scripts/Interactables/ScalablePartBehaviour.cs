@@ -86,7 +86,7 @@ namespace Behaviours
                   Debug.Log(l_scaledDifference);
                   if (l_scaledDifference > 0.001f)
                   {
-                     ScoreManagerSingleton.GetInstance().OnDecreasePotionUsed.Invoke(l_difference);
+                     ScoreManagerSingleton.GetInstance().OnIncreasePotionUsed.Invoke(l_difference);
                      m_previousScale = l_actualScale;
                   }
                }
