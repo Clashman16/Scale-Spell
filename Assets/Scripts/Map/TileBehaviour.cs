@@ -149,13 +149,6 @@ namespace Behaviours
                   float l_travelledDistance = l_player.GetComponent<SpriteRenderer>().bounds.min.x - l_bounds.min.x;
                   ScoreManagerSingleton.GetInstance().OnTravelled().Invoke(l_travelledDistance);
                }
-
-               Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-               if (!GeometryUtility.TestPlanesAABB(l_planes, l_bounds))
-               {
-                  l_tiles.Remove(this);
-                  DestroyImmediate(gameObject);
-               }
             }
          }
       }
