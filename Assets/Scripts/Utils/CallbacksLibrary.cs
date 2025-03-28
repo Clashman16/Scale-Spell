@@ -38,9 +38,9 @@ namespace Utils.Callbacks
          GameStateManager.State = GameStateEnum.PAUSED;
       }
 
-      public static void OnTimeSpawnerTimerFinished()
+      public static void OnTileSpawnerTimerFinished()
       {
-         TileSpawnerSingleton.GetInstance().Spawn();
+         TileSpawnerSingleton.Instance.PrepareTileToSpawn();
       }
 
       public static void OnPlayerLoose()

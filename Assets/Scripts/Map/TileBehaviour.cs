@@ -4,6 +4,7 @@ using Managers;
 using Managers.Spawners;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 namespace Behaviours
 {
@@ -11,39 +12,30 @@ namespace Behaviours
    {
       public class TileBehaviour : MonoBehaviour
       {
-         private bool m_hasObstacle;
+         private TileData m_data;
 
-         public bool HasObstacle
+         public TileData Data
          {
-            get => m_hasObstacle;
-            set => m_hasObstacle = value;
+            get => m_data;
+            set
+            {
+               m_data = value;
+
+               ChangeSprite();
+               Resize();
+
+               InitRuler();
+               DestroyRuler();
+            }
          }
 
-         private EnvironmentEnum m_type;
-
-         public EnvironmentEnum Type
+         public bool IsFullyVisible
          {
-            get => m_type;
-         }
-
-         private int m_length;
-
-         public int Length
-         {
-            get => m_length;
-         }
-
-         public void Init(EnvironmentEnum p_environnement, int p_length, bool p_hasObstacle = false)
-         {
-            m_hasObstacle = p_hasObstacle;
-            m_type = p_environnement;
-            m_length = p_length;
-
-            ChangeSprite(p_environnement);
-            Resize();
-
-            InitRuler();
-            DestroyRuler();
+            get
+            {
+               Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
+               return screenPoint.x > 0 && screenPoint.x < 1;
+            }
          }
 
          private void Resize()
@@ -52,17 +44,18 @@ namespace Behaviours
             l_rulerTrf.SetParent(null);
 
             Vector3 l_scale = transform.localScale;
-            l_scale.x = m_length;
+            l_scale.x = m_data.Length;
             transform.localScale = l_scale;
 
             l_rulerTrf.SetParent(transform);
          }
 
-         private void ChangeSprite(EnvironmentEnum p_environnement)
+         private void ChangeSprite()
          {
+            EnvironmentEnum l_type = m_data.Type;
             Color l_color = Color.white;
 
-            switch(p_environnement)
+            switch(l_type)
             {
                case EnvironmentEnum.BRICKS:
                   l_color = Color.gray;
@@ -82,7 +75,7 @@ namespace Behaviours
          {
             if ((ScoreManagerSingleton.GetInstance().IncreasePotionQuantity >= 0.5 &&
                  ScoreManagerSingleton.GetInstance().DecreasePotionQuantity >= 0.5) ||
-                m_hasObstacle)
+                m_data.HasObstacle)
             {
                RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
                DestroyImmediate(l_ruler.gameObject);
@@ -120,7 +113,14 @@ namespace Behaviours
             l_ruler.Init(ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < ScoreManagerSingleton.GetInstance().DecreasePotionQuantity);
          }
 
-         void Update()
+         private void Start()
+         {
+            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+            List<TileBehaviour> l_tiles = l_mapManager.Tiles;
+            l_tiles.Add(this);
+         }
+
+         private void Update()
          {
             if(GameStateManager.State == GameStateEnum.PLAYING)
             {
@@ -128,7 +128,7 @@ namespace Behaviours
 
                float l_distance = Time.deltaTime;
 
-               TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.GetInstance();
+               TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.Instance;
 
                MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
                List<TileBehaviour> l_tiles = l_mapManager.Tiles;
@@ -136,6 +136,11 @@ namespace Behaviours
                if (l_tiles[l_tiles.Count-1] == this)
                {
                   l_tileSpawner.TimeBeforeSpawn -= l_distance;
+
+                  if(IsFullyVisible)
+                  {
+                     TileSpawnerSingleton.Instance.SpawnFirstWaitingTile();
+                  }
                }
                
                l_position.x -= l_distance;

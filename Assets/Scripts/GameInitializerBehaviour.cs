@@ -9,8 +9,8 @@ namespace Behaviours
    {
       void Start()
       {
-         TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.GetInstance();
-         l_tileSpawner.m_timerFinished += CallbacksLibrary.OnTimeSpawnerTimerFinished;
+         TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.Instance;
+         l_tileSpawner.m_timerFinished += CallbacksLibrary.OnTileSpawnerTimerFinished;
          l_tileSpawner.TimeBeforeSpawn = 0;
 
          UIManagerSingleton.GetInstance().Init();
