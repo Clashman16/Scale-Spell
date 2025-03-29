@@ -74,62 +74,64 @@ namespace Managers.Spawners
 
       internal void SpawnFirstWaitingTile()
       {
-         GameObject l_instantiatedTile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>(m_tilePrefabPath));
-         TileBehaviour l_newTile = l_instantiatedTile.GetComponent<TileBehaviour>();
-         l_newTile.Data = m_tilesToSpawn[0];
-         m_tilesToSpawn.RemoveAt(0);
-
-         TileData l_data = l_newTile.Data;
-
-         float l_tileWidth = l_instantiatedTile.GetComponent<Transform>().lossyScale.x;
-         Vector3 l_spawnPosition;
-
-         MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
-         List<TileBehaviour> l_tiles = l_mapManager.Tiles;
-
-         if (l_tiles.Count > 0)
+         if(m_tilesToSpawn.Count > 0)
          {
-            TileBehaviour l_lastTile = l_tiles[l_tiles.Count - 1];
-            float l_lastTileWidth = l_lastTile.GetComponent<SpriteRenderer>().bounds.size.x;
-            l_spawnPosition = l_lastTile.transform.position + new Vector3(l_lastTileWidth / 2 + l_tileWidth / 2, 0, 0);
-         }
-         else
-         {
-            Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
-            Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
-            l_spawnPosition = l_worldPosition + new Vector3(-l_tileWidth / 2, 0.5f, 0);
-         }
+            GameObject l_instantiatedTile = Object.Instantiate(Resources.Load<GameObject>(m_tilePrefabPath));
+            TileBehaviour l_newTile = l_instantiatedTile.GetComponent<TileBehaviour>();
+            l_newTile.Data = m_tilesToSpawn[0];
+            m_tilesToSpawn.RemoveAt(0);
 
-         l_newTile.transform.position = l_spawnPosition;
+            TileData l_data = l_newTile.Data;
 
-         m_timeBeforeSpawn = l_tileWidth * Time.deltaTime;
+            float l_tileWidth = l_instantiatedTile.GetComponent<Transform>().lossyScale.x;
+            Vector3 l_spawnPosition;
 
-         Bounds l_tileBound = l_instantiatedTile.GetComponent<SpriteRenderer>().bounds;
-
-         List<ObstacleGroundedBehaviour> l_obstaclesGrounded = l_mapManager.ObstaclesGrounded;
-         List<ObstacleFlyingBehaviour> l_obstaclesFlying = l_mapManager.ObstaclesFlying;
-         List<ObstacleBehaviour> l_obstacles = new List<ObstacleBehaviour>();
-         l_obstacles.AddRange(l_obstaclesGrounded);
-         l_obstacles.AddRange(l_obstaclesFlying);
-         if (l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
-         {
-            l_data.HasObstacle = false;
-            l_newTile.Data = l_data;
-         }
-
-
-         if (l_newTile.Data.HasObstacle)
-         {
-            TileBehaviour l_lastTile = null;
+            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+            List<TileBehaviour> l_tiles = l_mapManager.Tiles;
 
             if (l_tiles.Count > 0)
             {
-               l_lastTile = l_tiles[l_tiles.Count - 1];
+               TileBehaviour l_lastTile = l_tiles[l_tiles.Count - 1];
+               float l_lastTileWidth = l_lastTile.GetComponent<SpriteRenderer>().bounds.size.x;
+               l_spawnPosition = l_lastTile.transform.position + new Vector3(l_lastTileWidth / 2 + l_tileWidth / 2, 0, 0);
             }
-            m_obstacleSpawner.Spawn(l_newTile.transform, l_data.Type, l_lastTile);
-         }
+            else
+            {
+               Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
+               Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
+               l_spawnPosition = l_worldPosition + new Vector3(-l_tileWidth / 2, 0.5f, 0);
+            }
 
-         //l_tiles.Add(l_newTile);
+            l_newTile.transform.position = l_spawnPosition;
+
+            m_timeBeforeSpawn = l_tileWidth * Time.deltaTime;
+
+            Bounds l_tileBound = l_instantiatedTile.GetComponent<SpriteRenderer>().bounds;
+
+            List<ObstacleGroundedBehaviour> l_obstaclesGrounded = l_mapManager.ObstaclesGrounded;
+            List<ObstacleFlyingBehaviour> l_obstaclesFlying = l_mapManager.ObstaclesFlying;
+            List<ObstacleBehaviour> l_obstacles = new List<ObstacleBehaviour>();
+            l_obstacles.AddRange(l_obstaclesGrounded);
+            l_obstacles.AddRange(l_obstaclesFlying);
+            if (l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
+            {
+               l_data.HasObstacle = false;
+               l_newTile.Data = l_data;
+            }
+
+            if (l_newTile.Data.HasObstacle)
+            {
+               TileBehaviour l_lastTile = null;
+
+               if (l_tiles.Count > 0)
+               {
+                  l_lastTile = l_tiles[l_tiles.Count - 1];
+               }
+               m_obstacleSpawner.Spawn(l_newTile.transform, l_data.Type, l_lastTile);
+            }
+
+            l_tiles.Add(l_newTile);
+         }
       }
 
       private int TileLengthMajority(List<TileBehaviour> p_tiles)
