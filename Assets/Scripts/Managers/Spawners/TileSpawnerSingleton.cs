@@ -1,6 +1,5 @@
 using Behaviours.Map;
 using Behaviours.Map.Obstacles;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,7 +14,6 @@ namespace Managers.Spawners
       private ObstacleSpawner m_obstacleSpawner;
 
       private float m_timeBeforeSpawn;
-      public Action m_timerFinished;
 
       private List<TileData> m_tilesToSpawn;
 
@@ -27,7 +25,7 @@ namespace Managers.Spawners
             m_timeBeforeSpawn = value;
             if (m_timeBeforeSpawn <= 0)
             {
-               m_timerFinished.Invoke();
+               PrepareTileToSpawn();
             }
          }
       }
