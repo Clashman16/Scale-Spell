@@ -16,6 +16,7 @@ namespace Managers.Spawners
       private float m_timeBeforeSpawn;
 
       private List<TileData> m_tilesToSpawn;
+      private const int m_tilesToSpawnMaxSize = 5;
 
       public float TimeBeforeSpawn
       {
@@ -23,7 +24,7 @@ namespace Managers.Spawners
          set
          {
             m_timeBeforeSpawn = value;
-            if (m_timeBeforeSpawn <= 0)
+            if (m_timeBeforeSpawn <= 0 && m_tilesToSpawn.Count < m_tilesToSpawnMaxSize)
             {
                PrepareTileToSpawn();
             }
