@@ -115,9 +115,17 @@ namespace Behaviours
 
          private void Start()
          {
+            if(m_data == null)
+            {
+               m_data = new TileData(false, EnvironmentEnum.GRASS, 1);
+
             MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
             List<TileBehaviour> l_tiles = l_mapManager.Tiles;
+               if (l_tiles.Count == 0)
+               {
             l_tiles.Add(this);
+         }
+            }
          }
 
          private void Update()
