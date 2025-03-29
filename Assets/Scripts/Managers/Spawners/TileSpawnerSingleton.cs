@@ -1,6 +1,5 @@
 using Behaviours.Map;
 using Behaviours.Map.Obstacles;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,10 +9,14 @@ namespace Managers.Spawners
 {
    public sealed class TileSpawnerSingleton
    {
+      private const string m_tilePrefabPath = "Prefabs/Map/Tile";
+
       private ObstacleSpawner m_obstacleSpawner;
 
       private float m_timeBeforeSpawn;
-      public Action m_timerFinished;
+
+      private List<TileData> m_tilesToSpawn;
+      private const int m_tilesToSpawnMaxSize = 5;
 
       public float TimeBeforeSpawn
       {
@@ -21,9 +24,9 @@ namespace Managers.Spawners
          set
          {
             m_timeBeforeSpawn = value;
-            if (m_timeBeforeSpawn <= 0)
+            if (m_timeBeforeSpawn <= 0 && m_tilesToSpawn.Count < m_tilesToSpawnMaxSize)
             {
-               m_timerFinished.Invoke();
+               PrepareTileToSpawn();
             }
          }
       }
@@ -31,79 +34,104 @@ namespace Managers.Spawners
       private TileSpawnerSingleton()
       {
          m_obstacleSpawner = new ObstacleSpawner();
+         m_tilesToSpawn = new List<TileData>();
       }
 
       private static TileSpawnerSingleton m_instance = null;
 
-      public static TileSpawnerSingleton GetInstance()
+      public static TileSpawnerSingleton Instance
       {
-         if (m_instance == null)
+         get
          {
-            m_instance = new TileSpawnerSingleton();
+            if (m_instance == null)
+            {
+               m_instance = new TileSpawnerSingleton();
+            }
+            return m_instance;
          }
-         return m_instance;
       }
 
-      internal void Spawn()
+      internal void PrepareTileToSpawn()
       {
          MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
          List<TileBehaviour> l_tiles = l_mapManager.Tiles;
-
-         GameObject l_instantiatedTile = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Prefabs/Map/Tile"));
 
          EnvironmentEnum l_newTileType = RandomTileType(l_tiles);
          int l_newLength = RandomLength(l_tiles);
 
          TileBehaviour l_lastTile = null;
-         if(l_tiles.Count > 0)
+         if (l_tiles.Count > 0)
          {
-            l_lastTile = l_tiles[l_tiles.Count-1];
+            l_lastTile = l_tiles[l_tiles.Count - 1];
          }
 
-         bool l_hasObstacle = (l_tiles.Count % 3 == 0 || l_tiles.Count % 5 == 0) && l_lastTile != null && !l_lastTile.HasObstacle &&
+         bool l_hasObstacle = (l_tiles.Count % 3 == 0 || l_tiles.Count % 5 == 0) && l_lastTile != null && !l_lastTile.Data.HasObstacle &&
                               l_newTileType != EnvironmentEnum.SAND;
 
-         TileBehaviour l_newTile = l_instantiatedTile.GetComponent<TileBehaviour>();
-         l_newTile.Init(l_newTileType, l_newLength, l_hasObstacle);
+         TileData l_data = new TileData(l_hasObstacle, l_newTileType, l_newLength);
+         m_tilesToSpawn.Add(l_data);
+      }
 
-         float l_tileWidth = l_instantiatedTile.GetComponent<Transform>().lossyScale.x;
-         Vector3 l_spawnPosition;
-
-         if (l_lastTile != null)
+      internal void SpawnFirstWaitingTile()
+      {
+         if(m_tilesToSpawn.Count > 0)
          {
-            float l_lastTileWidth = l_lastTile.GetComponent<SpriteRenderer>().bounds.size.x;
-            l_spawnPosition = l_lastTile.transform.position + new Vector3(l_lastTileWidth / 2 + l_tileWidth / 2, 0, 0);
+            GameObject l_instantiatedTile = Object.Instantiate(Resources.Load<GameObject>(m_tilePrefabPath));
+            TileBehaviour l_newTile = l_instantiatedTile.GetComponent<TileBehaviour>();
+            l_newTile.Data = m_tilesToSpawn[0];
+            m_tilesToSpawn.RemoveAt(0);
+
+            TileData l_data = l_newTile.Data;
+
+            float l_tileWidth = l_instantiatedTile.GetComponent<Transform>().lossyScale.x;
+            Vector3 l_spawnPosition;
+
+            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+            List<TileBehaviour> l_tiles = l_mapManager.Tiles;
+
+            if (l_tiles.Count > 0)
+            {
+               TileBehaviour l_lastTile = l_tiles[l_tiles.Count - 1];
+               float l_lastTileWidth = l_lastTile.GetComponent<SpriteRenderer>().bounds.size.x;
+               l_spawnPosition = l_lastTile.transform.position + new Vector3(l_lastTileWidth / 2 + l_tileWidth / 2, 0, 0);
+            }
+            else
+            {
+               Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
+               Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
+               l_spawnPosition = l_worldPosition + new Vector3(-l_tileWidth / 2, 0.5f, 0);
+            }
+
+            l_newTile.transform.position = l_spawnPosition;
+
+            m_timeBeforeSpawn = l_tileWidth * Time.deltaTime;
+
+            Bounds l_tileBound = l_instantiatedTile.GetComponent<SpriteRenderer>().bounds;
+
+            List<ObstacleGroundedBehaviour> l_obstaclesGrounded = l_mapManager.ObstaclesGrounded;
+            List<ObstacleFlyingBehaviour> l_obstaclesFlying = l_mapManager.ObstaclesFlying;
+            List<ObstacleBehaviour> l_obstacles = new List<ObstacleBehaviour>();
+            l_obstacles.AddRange(l_obstaclesGrounded);
+            l_obstacles.AddRange(l_obstaclesFlying);
+            if (l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
+            {
+               l_data.HasObstacle = false;
+               l_newTile.Data = l_data;
+            }
+
+            if (l_newTile.Data.HasObstacle)
+            {
+               TileBehaviour l_lastTile = null;
+
+               if (l_tiles.Count > 0)
+               {
+                  l_lastTile = l_tiles[l_tiles.Count - 1];
+               }
+               m_obstacleSpawner.Spawn(l_newTile.transform, l_data.Type, l_lastTile);
+            }
+
+            l_tiles.Add(l_newTile);
          }
-         else
-         {
-            Vector3 l_screenPosition = new Vector3(Screen.width, 0, Camera.main.nearClipPlane);
-            Vector3 l_worldPosition = Camera.main.ScreenToWorldPoint(l_screenPosition);
-            l_spawnPosition = l_worldPosition + new Vector3(-l_tileWidth / 2, 0.5f, 0);
-         }
-
-         l_newTile.transform.position = l_spawnPosition;
-
-         m_timeBeforeSpawn = l_tileWidth*Time.deltaTime;
-
-         Bounds l_tileBound = l_instantiatedTile.GetComponent<SpriteRenderer>().bounds;
-
-         List<ObstacleGroundedBehaviour> l_obstaclesGrounded = l_mapManager.ObstaclesGrounded;
-         List<ObstacleFlyingBehaviour> l_obstaclesFlying = l_mapManager.ObstaclesFlying;
-         List<ObstacleBehaviour> l_obstacles = new List<ObstacleBehaviour>();
-         l_obstacles.AddRange(l_obstaclesGrounded);
-         l_obstacles.AddRange(l_obstaclesFlying);
-         if (l_obstacles.Any(p_obstacle => p_obstacle.GetComponentsInChildren<SpriteRenderer>().Any(p_renderer => p_renderer.bounds.max.x >= l_tileBound.min.x)))
-         {
-            l_hasObstacle = false;
-            l_newTile.HasObstacle = false;
-         }
-
-         if (l_hasObstacle)
-         {
-            m_obstacleSpawner.Spawn(l_instantiatedTile.transform, l_newTileType, l_lastTile);
-         }
-
-         l_tiles.Add(l_newTile);
       }
 
       private int TileLengthMajority(List<TileBehaviour> p_tiles)
@@ -113,12 +141,12 @@ namespace Managers.Spawners
 
          foreach (TileBehaviour l_tile in p_tiles)
          {
-            int l_length = l_tile.Length;
+            int l_length = l_tile.Data.Length;
             if (l_count.ContainsKey(l_length))
             {
                l_count[l_length]++;
 
-               if(l_count[l_length] > l_count[l_majority])
+               if (l_count[l_length] > l_count[l_majority])
                {
                   l_majority = l_length;
                }
@@ -126,8 +154,8 @@ namespace Managers.Spawners
             else
             {
                l_count[l_length] = 1;
-               
-               if(l_majority == -1)
+
+               if (l_majority == -1)
                {
                   l_majority = l_length;
                }
@@ -145,8 +173,8 @@ namespace Managers.Spawners
 
          if (p_tiles.Count != 0)
          {
-            int l_lastLength = p_tiles[p_tiles.Count - 1].Length;
-            l_length = RandomIntHelper.GetRandomValue(l_lastLength, TileTypeMajority(p_tiles), l_maxLengthExclusive);
+            int l_lastLength = p_tiles[p_tiles.Count - 1].Data.Length;
+            l_length = RandomIntHelper.GetRandomValue(l_lastLength, TileLengthMajority(p_tiles), l_maxLengthExclusive);
          }
 
          l_length += 1;
@@ -161,14 +189,14 @@ namespace Managers.Spawners
 
          foreach (TileBehaviour l_tile in p_tiles)
          {
-            EnvironmentEnum l_type = l_tile.Type;
+            EnvironmentEnum l_type = l_tile.Data.Type;
             if (l_count.ContainsKey(l_type))
             {
                l_count[l_type]++;
 
-               if (l_count[l_type] > l_count[(EnvironmentEnum) l_majority])
+               if (l_count[l_type] > l_count[(EnvironmentEnum)l_majority])
                {
-                  l_majority = (int) l_type;
+                  l_majority = (int)l_type;
                }
             }
             else
@@ -177,7 +205,7 @@ namespace Managers.Spawners
 
                if (l_majority == -1)
                {
-                  l_majority = (int) l_type;
+                  l_majority = (int)l_type;
                }
             }
          }
@@ -191,9 +219,9 @@ namespace Managers.Spawners
 
          int l_envId = UnityEngine.Random.Range(0, l_enumSize);
 
-         if(p_tiles.Count != 0)
+         if (p_tiles.Count != 0)
          {
-            EnvironmentEnum l_lastType = p_tiles[p_tiles.Count - 1].Type;
+            EnvironmentEnum l_lastType = p_tiles[p_tiles.Count - 1].Data.Type;
             l_envId = RandomIntHelper.GetRandomValue((int)l_lastType, TileTypeMajority(p_tiles), l_enumSize);
          }
 

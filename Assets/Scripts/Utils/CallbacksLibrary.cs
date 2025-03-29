@@ -1,7 +1,6 @@
 using Behaviours.Map.Obstacles;
 using Behaviours.UI;
 using Managers;
-using Managers.Spawners;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -36,11 +35,6 @@ namespace Utils.Callbacks
       {
          SceneManager.LoadScene("Titlescreen", LoadSceneMode.Single);
          GameStateManager.State = GameStateEnum.PAUSED;
-      }
-
-      public static void OnTimeSpawnerTimerFinished()
-      {
-         TileSpawnerSingleton.GetInstance().Spawn();
       }
 
       public static void OnPlayerLoose()

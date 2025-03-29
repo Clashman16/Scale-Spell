@@ -4,6 +4,7 @@ using Managers;
 using Managers.Spawners;
 using System.Collections.Generic;
 using UnityEngine;
+using Utils;
 
 namespace Behaviours
 {
@@ -11,58 +12,58 @@ namespace Behaviours
    {
       public class TileBehaviour : MonoBehaviour
       {
-         private bool m_hasObstacle;
+         private TileData m_data;
 
-         public bool HasObstacle
+         public TileData Data
          {
-            get => m_hasObstacle;
-            set => m_hasObstacle = value;
+            get => m_data;
+            set
+            {
+               m_data = value;
+               
+               ChangeSprite();
+               Resize();
+
+               InitRuler();
+               DestroyRuler();
+            }
          }
 
-         private EnvironmentEnum m_type;
-
-         public EnvironmentEnum Type
+         public bool IsFullyVisible
          {
-            get => m_type;
-         }
-
-         private int m_length;
-
-         public int Length
-         {
-            get => m_length;
-         }
-
-         public void Init(EnvironmentEnum p_environnement, int p_length, bool p_hasObstacle = false)
-         {
-            m_hasObstacle = p_hasObstacle;
-            m_type = p_environnement;
-            m_length = p_length;
-
-            ChangeSprite(p_environnement);
-            Resize();
-
-            InitRuler();
-            DestroyRuler();
+            get
+            {
+               Vector3 screenPoint = Camera.main.WorldToViewportPoint(transform.position);
+               return screenPoint.x > 0 && screenPoint.x < 1;
+            }
          }
 
          private void Resize()
          {
-            Transform l_rulerTrf = GetComponentInChildren<RulerBehaviour>().transform;
-            l_rulerTrf.SetParent(null);
-
+            RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
+            if (l_ruler != null)
+            {
+               Transform l_rulerTrf = l_ruler.transform;
+               l_rulerTrf.SetParent(null);
+            }
+            
             Vector3 l_scale = transform.localScale;
-            l_scale.x = m_length;
+            l_scale.x = m_data.Length;
             transform.localScale = l_scale;
 
-            l_rulerTrf.SetParent(transform);
+            if (l_ruler != null)
+            {
+               Transform l_rulerTrf = l_ruler.transform;
+               l_rulerTrf.SetParent(transform);
+            }
          }
 
-         private void ChangeSprite(EnvironmentEnum p_environnement)
+         private void ChangeSprite()
          {
+            EnvironmentEnum l_type = m_data.Type;
             Color l_color = Color.white;
 
-            switch(p_environnement)
+            switch(l_type)
             {
                case EnvironmentEnum.BRICKS:
                   l_color = Color.gray;
@@ -80,33 +81,30 @@ namespace Behaviours
 
          private void DestroyRuler()
          {
-            if ((ScoreManagerSingleton.GetInstance().IncreasePotionQuantity >= 0.5 &&
+            RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
+            if(l_ruler != null)
+            {
+               if ((ScoreManagerSingleton.GetInstance().IncreasePotionQuantity >= 0.5 &&
                  ScoreManagerSingleton.GetInstance().DecreasePotionQuantity >= 0.5) ||
-                m_hasObstacle)
-            {
-               RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
-               DestroyImmediate(l_ruler.gameObject);
-            }
-            else
-            {
-               if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0.7)
+                m_data.HasObstacle)
                {
-                  int l_chance = Random.Range(0, 10);
-                  if (l_chance >= 2 && l_chance <= 6)
-                  {
-                     RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
-                     DestroyImmediate(l_ruler.gameObject);
-                  }
+                  DestroyImmediate(l_ruler.gameObject);
                }
-               if (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0.7)
+               else
                {
-                  RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
-                  if (l_rulers != null && l_rulers.Length > 0)
+                  if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0.7)
                   {
                      int l_chance = Random.Range(0, 10);
                      if (l_chance >= 2 && l_chance <= 6)
                      {
-                        RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
+                        DestroyImmediate(l_ruler.gameObject);
+                     }
+                  }
+                  if (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0.7)
+                  {
+                     int l_chance = Random.Range(0, 10);
+                     if (l_chance >= 2 && l_chance <= 6)
+                     {
                         DestroyImmediate(l_ruler.gameObject);
                      }
                   }
@@ -117,10 +115,28 @@ namespace Behaviours
          private void InitRuler()
          {
             RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
-            l_ruler.Init(ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < ScoreManagerSingleton.GetInstance().DecreasePotionQuantity);
+            if(l_ruler != null)
+            {
+               l_ruler.Init(ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < ScoreManagerSingleton.GetInstance().DecreasePotionQuantity);
+            }
          }
 
-         void Update()
+         private void Start()
+         {
+            if(m_data == null)
+            {
+               m_data = new TileData(false, EnvironmentEnum.GRASS, 1);
+
+               MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+               List<TileBehaviour> l_tiles = l_mapManager.Tiles;
+               if (l_tiles.Count == 0)
+               {
+                  l_tiles.Add(this);
+               }
+            }
+         }
+
+         private void Update()
          {
             if(GameStateManager.State == GameStateEnum.PLAYING)
             {
@@ -128,7 +144,7 @@ namespace Behaviours
 
                float l_distance = Time.deltaTime;
 
-               TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.GetInstance();
+               TileSpawnerSingleton l_tileSpawner = TileSpawnerSingleton.Instance;
 
                MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
                List<TileBehaviour> l_tiles = l_mapManager.Tiles;
@@ -136,6 +152,11 @@ namespace Behaviours
                if (l_tiles[l_tiles.Count-1] == this)
                {
                   l_tileSpawner.TimeBeforeSpawn -= l_distance;
+
+                  if(IsFullyVisible)
+                  {
+                     TileSpawnerSingleton.Instance.SpawnFirstWaitingTile();
+                  }
                }
                
                l_position.x -= l_distance;
@@ -148,13 +169,6 @@ namespace Behaviours
                {
                   float l_travelledDistance = l_player.GetComponent<SpriteRenderer>().bounds.min.x - l_bounds.min.x;
                   ScoreManagerSingleton.GetInstance().OnTravelled().Invoke(l_travelledDistance);
-               }
-
-               Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-               if (!GeometryUtility.TestPlanesAABB(l_planes, l_bounds))
-               {
-                  l_tiles.Remove(this);
-                  DestroyImmediate(gameObject);
                }
             }
          }

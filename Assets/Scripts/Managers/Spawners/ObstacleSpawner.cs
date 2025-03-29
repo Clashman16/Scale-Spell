@@ -48,7 +48,7 @@ namespace Managers.Spawners
             GameObject l_spawnedObject = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(m_prefabsPath, l_prefabName)));
 
             Vector3 l_position = l_spawnedObject.transform.position;
-            l_position.x = p_tileTransform.transform.position.x;
+            l_position.x = p_tileTransform.position.x;
             l_position.y = l_utils.GetYCoordinate(l_prefabName);
             l_spawnedObject.transform.position = l_position;
 
@@ -64,7 +64,7 @@ namespace Managers.Spawners
             ObstacleType l_obstacleType = l_utils.RandomObstacleType(l_obstaclesGrounded);
 
             int l_travelledDistance = Mathf.RoundToInt(ScoreManagerSingleton.GetInstance().TravelledDistance);
-            bool l_hasObstacle = p_lastTile != null && !p_lastTile.HasObstacle;
+            bool l_hasObstacle = p_lastTile != null && !p_lastTile.Data.HasObstacle;
             if (!l_player.HasShield && l_obstacleType == ObstacleType.HARMFUL && l_hasObstacle && (l_travelledDistance % 5 == 0 || l_travelledDistance % 10 == 0))
             {
                m_potionSpawner.Spawn(p_lastTile.transform);

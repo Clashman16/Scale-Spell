@@ -41,14 +41,6 @@ namespace Behaviours
 
                l_position.x -= l_distance;
                transform.position = l_position;
-
-               Plane[] l_planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-
-               if (!GeometryUtility.TestPlanesAABB(l_planes, GetComponent<SpriteRenderer>().bounds))
-               {
-                  MapManagerSingleton.GetInstance().ObstaclesGrounded.Remove(this);
-                  DestroyImmediate(gameObject);
-               }
             }
          }
 
