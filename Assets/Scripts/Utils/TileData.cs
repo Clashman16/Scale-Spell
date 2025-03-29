@@ -2,7 +2,7 @@ using Behaviours.Map;
 
 namespace Utils
 {
-   public struct TileData
+   public class TileData
    {
       bool m_hasObstacle;
       EnvironmentEnum m_type;
