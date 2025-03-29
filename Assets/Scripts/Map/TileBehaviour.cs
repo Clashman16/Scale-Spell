@@ -20,7 +20,7 @@ namespace Behaviours
             set
             {
                m_data = value;
-
+               
                ChangeSprite();
                Resize();
 
@@ -40,14 +40,22 @@ namespace Behaviours
 
          private void Resize()
          {
-            Transform l_rulerTrf = GetComponentInChildren<RulerBehaviour>().transform;
-            l_rulerTrf.SetParent(null);
-
+            RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
+            if (l_ruler != null)
+            {
+               Transform l_rulerTrf = l_ruler.transform;
+               l_rulerTrf.SetParent(null);
+            }
+            
             Vector3 l_scale = transform.localScale;
             l_scale.x = m_data.Length;
             transform.localScale = l_scale;
 
-            l_rulerTrf.SetParent(transform);
+            if (l_ruler != null)
+            {
+               Transform l_rulerTrf = l_ruler.transform;
+               l_rulerTrf.SetParent(transform);
+            }
          }
 
          private void ChangeSprite()
@@ -73,33 +81,30 @@ namespace Behaviours
 
          private void DestroyRuler()
          {
-            if ((ScoreManagerSingleton.GetInstance().IncreasePotionQuantity >= 0.5 &&
+            RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
+            if(l_ruler != null)
+            {
+               if ((ScoreManagerSingleton.GetInstance().IncreasePotionQuantity >= 0.5 &&
                  ScoreManagerSingleton.GetInstance().DecreasePotionQuantity >= 0.5) ||
                 m_data.HasObstacle)
-            {
-               RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
-               DestroyImmediate(l_ruler.gameObject);
-            }
-            else
-            {
-               if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0.7)
                {
-                  int l_chance = Random.Range(0, 10);
-                  if (l_chance >= 2 && l_chance <= 6)
-                  {
-                     RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
-                     DestroyImmediate(l_ruler.gameObject);
-                  }
+                  DestroyImmediate(l_ruler.gameObject);
                }
-               if (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0.7)
+               else
                {
-                  RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
-                  if (l_rulers != null && l_rulers.Length > 0)
+                  if (ScoreManagerSingleton.GetInstance().IncreasePotionQuantity > 0.7)
                   {
                      int l_chance = Random.Range(0, 10);
                      if (l_chance >= 2 && l_chance <= 6)
                      {
-                        RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
+                        DestroyImmediate(l_ruler.gameObject);
+                     }
+                  }
+                  if (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0.7)
+                  {
+                     int l_chance = Random.Range(0, 10);
+                     if (l_chance >= 2 && l_chance <= 6)
+                     {
                         DestroyImmediate(l_ruler.gameObject);
                      }
                   }
@@ -110,7 +115,10 @@ namespace Behaviours
          private void InitRuler()
          {
             RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
-            l_ruler.Init(ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < ScoreManagerSingleton.GetInstance().DecreasePotionQuantity);
+            if(l_ruler != null)
+            {
+               l_ruler.Init(ScoreManagerSingleton.GetInstance().IncreasePotionQuantity < ScoreManagerSingleton.GetInstance().DecreasePotionQuantity);
+            }
          }
 
          private void Start()
@@ -119,12 +127,12 @@ namespace Behaviours
             {
                m_data = new TileData(false, EnvironmentEnum.GRASS, 1);
 
-            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
-            List<TileBehaviour> l_tiles = l_mapManager.Tiles;
+               MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+               List<TileBehaviour> l_tiles = l_mapManager.Tiles;
                if (l_tiles.Count == 0)
                {
-            l_tiles.Add(this);
-         }
+                  l_tiles.Add(this);
+               }
             }
          }
 
