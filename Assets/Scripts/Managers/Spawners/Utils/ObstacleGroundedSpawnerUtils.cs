@@ -146,7 +146,7 @@ namespace Managers.Spawners.Utils
                l_prefabName += "Tower";
                break;
             default: // EnvironmentEnum.SAND
-               l_prefabName = p_isBig ? "Sphinx" : "Sphinx";
+               l_prefabName = p_isBig ? "Anubis" : "Sphinx";
                break;
          }
 
@@ -175,7 +175,7 @@ namespace Managers.Spawners.Utils
                l_y = -2.61f;
                break;
             default: // "Anubis"
-               l_y = -0.05f;
+               l_y = -0.58f;
                break;
          }
          return l_y;
