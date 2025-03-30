@@ -145,6 +145,9 @@ namespace Managers.Spawners.Utils
             case EnvironmentEnum.BRICKS:
                l_prefabName += "Tower";
                break;
+            default: // EnvironmentEnum.SAND
+               l_prefabName = p_isBig ? "Sphinx" : "Sphinx";
+               break;
          }
 
          return l_prefabName;
@@ -168,7 +171,10 @@ namespace Managers.Spawners.Utils
             case "Little Tower":
                l_y = -1.62f;
                break;
-            default:
+            case "Sphinx":
+               l_y = -2.61f;
+               break;
+            default: // "Anubis"
                l_y = -0.05f;
                break;
          }
