@@ -65,8 +65,7 @@ namespace Managers.Spawners
             l_lastTile = l_tiles[l_tiles.Count - 1];
          }
 
-         bool l_hasObstacle = (l_tiles.Count % 3 == 0 || l_tiles.Count % 5 == 0) && l_lastTile != null && !l_lastTile.Data.HasObstacle &&
-                              l_newTileType != EnvironmentEnum.SAND;
+         bool l_hasObstacle = (l_tiles.Count % 3 == 0 || l_tiles.Count % 5 == 0) && l_lastTile != null && !l_lastTile.Data.HasObstacle;
 
          TileData l_data = new TileData(l_hasObstacle, l_newTileType, l_newLength);
          m_tilesToSpawn.Add(l_data);
