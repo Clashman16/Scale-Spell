@@ -34,15 +34,17 @@ namespace Behaviours
                {
                   l_mapManager.Clouds.Remove(l_cloud);
                }
+
+               TileSpawnerSingleton.Instance.ObstacleSpawner.ObstacleFlyingSpawnerUtils.AddToRecycleBin(l_collidedObject);
             }
 
             ObstacleGroundedBehaviour l_groundedObstacle = l_collidedObject.GetComponent<ObstacleGroundedBehaviour>();
             if (l_groundedObstacle != null)
             {
                l_mapManager.ObstaclesGrounded.Remove(l_groundedObstacle);
-            }
 
-            Destroy(l_collidedObject);
+               TileSpawnerSingleton.Instance.ObstacleSpawner.ObstacleGroundedSpawnerUtils.AddToRecycleBin(l_collidedObject);
+            }
          }
       }
    }

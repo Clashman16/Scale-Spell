@@ -1,6 +1,7 @@
 using Behaviours.Map;
 using Behaviours.Map.Obstacles;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Utils;
 
@@ -8,6 +9,8 @@ namespace Managers.Spawners.Utils
 {
    public class ObstacleGroundedSpawnerUtils : ObstacleSpawnerUtils
    {
+      private const string m_spritesPath = "Sprites/Map/Obstacles";
+
       private int ObstacleSizeMajority(List<ObstacleGroundedBehaviour> p_obstacles)
       {
          Dictionary<int, int> l_count = new Dictionary<int, int>();
@@ -179,6 +182,42 @@ namespace Managers.Spawners.Utils
                break;
          }
          return l_y;
+      }
+
+      internal override ObstacleBehaviour Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType)
+      {
+         MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+         List<ObstacleGroundedBehaviour> l_obstacles = l_mapManager.ObstaclesGrounded;
+
+         bool l_isBig = RandomSize(p_tileTransform, l_obstacles);
+         ObstacleType l_obstacleType = RandomObstacleType(l_obstacles);
+
+         string l_prefabName = GetPrefabName(l_isBig, p_tileType);
+
+         GameObject l_spawnedObject = null;
+
+         if (!IsRecycleBinEmpty)
+         {
+            l_spawnedObject = RemoveFromRecycleBin(l_prefabName);
+         }
+
+         if (l_spawnedObject == null)
+         {
+            l_spawnedObject = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(PrefabsPath, l_prefabName)));
+         }
+
+         Vector3 l_position = l_spawnedObject.transform.position;
+         l_position.x = p_tileTransform.transform.position.x;
+         l_position.y = GetYCoordinate(l_prefabName);
+         l_spawnedObject.transform.position = l_position;
+
+         string l_spriteName = l_prefabName.ToLower();
+         l_spriteName = l_spriteName.Replace(" ", "-");
+
+         ObstacleGroundedBehaviour l_obstacleGrounded = l_spawnedObject.GetComponent<ObstacleGroundedBehaviour>();
+         l_obstacleGrounded.Init(l_obstacleType, l_isBig, Path.Combine(m_spritesPath, l_spriteName));
+         
+         return l_obstacleGrounded;
       }
    }
 }
