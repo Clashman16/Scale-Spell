@@ -52,23 +52,27 @@ namespace Behaviours
             SpriteRenderer l_renderer = GetComponent<SpriteRenderer>();
             l_renderer.sprite = Resources.LoadAll<Sprite>(p_spritePath)[(int) m_type];
 
+            bool l_enableCollider = true;
+
             if(m_type != ObstacleType.INBETWEEN)
             {
                DestroyImmediate(transform.GetChild(0).gameObject);
                
                if(m_type == ObstacleType.HARMLESS)
                {
-                  DestroyImmediate(GetComponent<Collider2D>());
+                  l_enableCollider = false;
                }
             }
             else
             {
                l_renderer.sprite = Resources.LoadAll<Sprite>(p_spritePath)[(int)ObstacleType.HARMLESS];
-               DestroyImmediate(GetComponent<Collider2D>());
+               l_enableCollider = false;
             }
 
             DestroyRulers();
             InitRulers();
+
+            EnableCollider(l_enableCollider);
          }
 
          private void InitRulers()
@@ -154,7 +158,7 @@ namespace Behaviours
 
             if (l_collider != null)
             {
-               l_collider.enabled = p_enable;
+               gameObject.layer = LayerMask.NameToLayer(p_enable ? "Collidable" : "NotCollidable");
             }
          }
       }

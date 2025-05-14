@@ -39,12 +39,13 @@ namespace Behaviours
          public void Init(bool p_withBullet)
          {
             m_withBullet = p_withBullet;
+
+            EnableCollider(true);
          }
 
          public override void EnableCollider(bool p_enable)
          {
-            Collider2D l_collider = GetComponent<Collider2D>();
-            l_collider.enabled = p_enable;
+            gameObject.layer = LayerMask.NameToLayer(p_enable ? "Collidable" : "NotCollidable");
          }
       }
    }
