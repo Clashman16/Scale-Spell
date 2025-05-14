@@ -56,6 +56,11 @@ namespace Managers.Spawners
          }
       }
 
+      public static void Reset()
+      {
+         m_instance = null;
+      }
+
       internal void PrepareTileToSpawn()
       {
          MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();

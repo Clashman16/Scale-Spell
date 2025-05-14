@@ -1,6 +1,7 @@
 using Behaviours.Map.Obstacles;
 using Behaviours.UI;
 using Managers;
+using Managers.Spawners;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine.SceneManagement;
@@ -27,8 +28,7 @@ namespace Utils.Callbacks
       {
          SceneManager.LoadScene("Level", LoadSceneMode.Single);
          GameStateManager.State = GameStateEnum.PLAYING;
-         ScoreManagerSingleton.Reset();
-         MapManagerSingleton.Reset();
+         Reset();
       }
 
       public static void GoToTitlescreen()
@@ -51,8 +51,14 @@ namespace Utils.Callbacks
          l_resumeButton.RemoveListener(Resume);
          l_resumeButton.AddListener(Restart);
 
+         Reset();
+      }
+
+      private static void Reset()
+      {
          ScoreManagerSingleton.Reset();
          MapManagerSingleton.Reset();
+         TileSpawnerSingleton.Reset();
       }
 
       public static void OnMeterTravelled(float p_distance)
