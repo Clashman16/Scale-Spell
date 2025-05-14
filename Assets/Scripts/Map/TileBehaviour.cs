@@ -24,8 +24,8 @@ namespace Behaviours
                ChangeSprite();
                Resize();
 
+               DisableRuler();
                InitRuler();
-               DestroyRuler();
             }
          }
 
@@ -79,7 +79,7 @@ namespace Behaviours
             GetComponent<SpriteRenderer>().color = l_color;
          }
 
-         private void DestroyRuler()
+         private void DisableRuler()
          {
             RulerBehaviour l_ruler = GetComponentInChildren<RulerBehaviour>();
             if(l_ruler != null)
@@ -88,7 +88,7 @@ namespace Behaviours
                  ScoreManagerSingleton.GetInstance().DecreasePotionQuantity >= 0.5) ||
                 m_data.HasObstacle)
                {
-                  DestroyImmediate(l_ruler.gameObject);
+                  l_ruler.gameObject.SetActive(false);
                }
                else
                {
@@ -97,7 +97,7 @@ namespace Behaviours
                      int l_chance = Random.Range(0, 10);
                      if (l_chance >= 2 && l_chance <= 6)
                      {
-                        DestroyImmediate(l_ruler.gameObject);
+                        l_ruler.gameObject.SetActive(false);
                      }
                   }
                   if (ScoreManagerSingleton.GetInstance().DecreasePotionQuantity > 0.7)
@@ -105,7 +105,7 @@ namespace Behaviours
                      int l_chance = Random.Range(0, 10);
                      if (l_chance >= 2 && l_chance <= 6)
                      {
-                        DestroyImmediate(l_ruler.gameObject);
+                        l_ruler.gameObject.SetActive(false);
                      }
                   }
                }
