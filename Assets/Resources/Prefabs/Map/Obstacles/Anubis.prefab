@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3652189755957609697}
   - component: {fileID: 4913088546120508955}
   - component: {fileID: 5625162399110597065}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Separate Part
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -303,7 +303,7 @@ GameObject:
   - component: {fileID: 4734722576013654670}
   - component: {fileID: 4201590449116045160}
   - component: {fileID: 5334737829898411151}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Anubis
   m_TagString: Untagged
   m_Icon: {fileID: 0}

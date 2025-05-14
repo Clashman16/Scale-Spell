@@ -135,8 +135,8 @@ GameObject:
   - component: {fileID: 239323016}
   - component: {fileID: 239323015}
   - component: {fileID: 239323014}
-  m_Layer: 0
-  m_Name: Tile (1)
+  m_Layer: 6
+  m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -501,8 +501,8 @@ GameObject:
   - component: {fileID: 445663523}
   - component: {fileID: 445663522}
   - component: {fileID: 445663521}
-  m_Layer: 0
-  m_Name: Tile (2)
+  m_Layer: 6
+  m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -736,8 +736,8 @@ GameObject:
   - component: {fileID: 702421824}
   - component: {fileID: 702421823}
   - component: {fileID: 702421822}
-  m_Layer: 0
-  m_Name: Tile (3)
+  m_Layer: 6
+  m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1104,8 +1104,8 @@ GameObject:
   - component: {fileID: 1487732220}
   - component: {fileID: 1487732219}
   - component: {fileID: 1487732218}
-  m_Layer: 0
-  m_Name: Tile (4)
+  m_Layer: 6
+  m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1447,7 +1447,7 @@ GameObject:
   - component: {fileID: 1917781766}
   - component: {fileID: 1917781765}
   - component: {fileID: 1917781769}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Level Limit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2200,7 +2200,7 @@ GameObject:
   - component: {fileID: 3983328474430168518}
   - component: {fileID: 2580045260375379694}
   - component: {fileID: 3279171976451553328}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
