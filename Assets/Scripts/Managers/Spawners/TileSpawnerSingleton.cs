@@ -7,11 +7,16 @@ using Utils;
 
 namespace Managers.Spawners
 {
-   public sealed class TileSpawnerSingleton
+   public sealed class TileSpawnerSingleton : ObjectRecycler
    {
       private const string m_tilePrefabPath = "Prefabs/Map/Tile";
 
       private ObstacleSpawner m_obstacleSpawner;
+
+      public ObstacleSpawner ObstacleSpawner
+      {
+         get => m_obstacleSpawner;
+      }
 
       private float m_timeBeforeSpawn;
 
@@ -31,7 +36,7 @@ namespace Managers.Spawners
          }
       }
 
-      private TileSpawnerSingleton()
+      private TileSpawnerSingleton() : base()
       {
          m_obstacleSpawner = new ObstacleSpawner();
          m_tilesToSpawn = new List<TileData>();
@@ -75,7 +80,18 @@ namespace Managers.Spawners
       {
          if(m_tilesToSpawn.Count > 0)
          {
-            GameObject l_instantiatedTile = Object.Instantiate(Resources.Load<GameObject>(m_tilePrefabPath));
+            GameObject l_instantiatedTile = null;
+            
+            if(!IsRecycleBinEmpty)
+            {
+               l_instantiatedTile = RemoveFromRecycleBin("Tile");
+            }
+
+            if(l_instantiatedTile == null)
+            {
+               l_instantiatedTile = Object.Instantiate(Resources.Load<GameObject>(m_tilePrefabPath));
+            }
+            
             TileBehaviour l_newTile = l_instantiatedTile.GetComponent<TileBehaviour>();
             l_newTile.Data = m_tilesToSpawn[0];
             m_tilesToSpawn.RemoveAt(0);
@@ -168,7 +184,7 @@ namespace Managers.Spawners
       {
          int l_maxLengthExclusive = 4;
 
-         int l_length = UnityEngine.Random.Range(0, l_maxLengthExclusive);
+         int l_length = Random.Range(0, l_maxLengthExclusive);
 
          if (p_tiles.Count != 0)
          {
@@ -216,7 +232,7 @@ namespace Managers.Spawners
       {
          int l_enumSize = 3;
 
-         int l_envId = UnityEngine.Random.Range(0, l_enumSize);
+         int l_envId = Random.Range(0, l_enumSize);
 
          if (p_tiles.Count != 0)
          {
