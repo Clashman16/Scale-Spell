@@ -7,7 +7,7 @@ namespace Behaviours
 {
    namespace Map.Obstacles
    {
-      public class CloudBehaviour : MonoBehaviour
+      public class CloudBehaviour : ObstacleFlyingBehaviour
       {
          private readonly string m_spritesPath = "Sprites/Map/Obstacles/clouds";
 
@@ -18,11 +18,13 @@ namespace Behaviours
             get => m_spriteId;
          }
 
-         void Start()
+         public override void Init(bool p_withBullet)
          {
+            base.Init(p_withBullet);
+
             MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
 
-            m_spriteId = RandomSpriteId(l_mapManager.Clouds);
+            m_spriteId = RandomSpriteId(l_mapManager);
 
             SpriteRenderer l_renderer = GetComponent<SpriteRenderer>();
             l_renderer.sprite = Resources.LoadAll<Sprite>(m_spritesPath)[m_spriteId];
@@ -62,16 +64,26 @@ namespace Behaviours
             return l_majority;
          }
 
-         private int RandomSpriteId(List<CloudBehaviour> p_clouds)
+         private int RandomSpriteId(MapManagerSingleton p_mapManager)
          {
             int l_maxIdExclusive = 3;
             int l_spriteId = Random.Range(0, l_maxIdExclusive);
 
-            if (p_clouds.Count != 0)
+            List<CloudBehaviour> l_clouds = p_mapManager.Clouds;
+            int l_lastCloudId = p_mapManager.LastCloudId;
+
+            if (l_clouds.Count != 0)
             {
-               int l_lastId = p_clouds[p_clouds.Count - 1].SpriteId;
-               l_spriteId = RandomIntHelper.GetRandomValue(l_lastId, SpriteIdMajority(p_clouds), l_maxIdExclusive);
+               l_spriteId = RandomIntHelper.GetRandomValue(l_lastCloudId, SpriteIdMajority(l_clouds), l_maxIdExclusive);
             }
+            else if(l_lastCloudId != -1)
+            {
+               l_spriteId = RandomIntHelper.GetRandomValue(l_lastCloudId, l_spriteId, l_maxIdExclusive);
+            }
+
+            p_mapManager.LastCloudId = l_spriteId;
+
+            Debug.Log(l_spriteId);
 
             return l_spriteId;
          }

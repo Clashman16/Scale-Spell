@@ -35,6 +35,14 @@ namespace Managers
          get => m_clouds;
       }
 
+      private int m_lastCloudId;
+
+      public int LastCloudId
+      {
+         get => m_lastCloudId;
+         set => m_lastCloudId = value;
+      }
+
       private PlayerBehaviour m_player;
 
       public PlayerBehaviour Player
@@ -45,9 +53,13 @@ namespace Managers
       private MapManagerSingleton()
       {
          m_tiles = new List<TileBehaviour>();
+
          m_obstaclesGrounded = new List<ObstacleGroundedBehaviour>();
          m_obstaclesFlying = new List<ObstacleFlyingBehaviour>();
+
          m_clouds = new List<CloudBehaviour>();
+         m_lastCloudId = -1;
+
          m_player = Object.FindObjectOfType<PlayerBehaviour>();
       }
 

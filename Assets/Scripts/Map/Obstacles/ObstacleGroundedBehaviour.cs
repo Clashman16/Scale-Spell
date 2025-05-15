@@ -23,14 +23,6 @@ namespace Behaviours
             get => m_isBig;
          }
 
-         public override void Start()
-         {
-            IsFlying = false;
-            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
-            List<ObstacleGroundedBehaviour> l_obstacles = l_mapManager.ObstaclesGrounded;
-            l_obstacles.Add(this);
-         }
-
          public override void Update()
          {
             if (GameStateManager.State == GameStateEnum.PLAYING)
@@ -46,6 +38,11 @@ namespace Behaviours
 
          public void Init(ObstacleType p_obstacleType, bool p_isBig, string p_spritePath)
          {
+            IsFlying = false;
+            MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+            List<ObstacleGroundedBehaviour> l_obstacles = l_mapManager.ObstaclesGrounded;
+            l_obstacles.Add(this);
+
             m_type = p_obstacleType;
             m_isBig = p_isBig;
 

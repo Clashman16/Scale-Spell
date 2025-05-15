@@ -14,8 +14,6 @@ namespace Behaviours
             set => m_isFlying = value;
          }
 
-         public abstract void Start();
-
          public abstract void Update();
 
          public abstract void EnableCollider(bool p_enable);
