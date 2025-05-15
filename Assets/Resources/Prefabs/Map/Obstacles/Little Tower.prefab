@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8923992841649575585}
   - component: {fileID: 3659458857874239188}
   - component: {fileID: 535823739215147537}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Little Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -158,7 +158,7 @@ GameObject:
   - component: {fileID: 4638318623920087542}
   - component: {fileID: 3559200621150450181}
   - component: {fileID: 4809260581044969500}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Separate Part
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1191094745262401515}
   - component: {fileID: 1714949722485880663}
   - component: {fileID: 3064051681851149994}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Separate Part
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 8804546044532556713}
   - component: {fileID: 4240877120122652680}
   - component: {fileID: 5357136879355072655}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Little Tree
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -347,6 +347,10 @@ PrefabInstance:
     - target: {fileID: 4543087188106326320, guid: c492231b416dba549ad0367b11326332, type: 3}
       propertyPath: m_Name
       value: Ruler
+      objectReference: {fileID: 0}
+    - target: {fileID: 4543087188106326320, guid: c492231b416dba549ad0367b11326332, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

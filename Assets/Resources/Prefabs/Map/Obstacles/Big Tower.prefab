@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2380477453942099267}
   - component: {fileID: 8001410733906012763}
   - component: {fileID: 3262404139807576778}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Separate Part
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -193,7 +193,7 @@ GameObject:
   - component: {fileID: 2832635745402917578}
   - component: {fileID: 4375635934061320657}
   - component: {fileID: 5773784847025222739}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Big Tower
   m_TagString: Untagged
   m_Icon: {fileID: 0}

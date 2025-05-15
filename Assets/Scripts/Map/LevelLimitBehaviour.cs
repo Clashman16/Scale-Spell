@@ -1,5 +1,6 @@
 using Behaviours.Map.Obstacles;
 using Managers;
+using Managers.Spawners;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +20,8 @@ namespace Behaviours
             {
                List<TileBehaviour> l_tiles = l_mapManager.Tiles;
                l_tiles.Remove(l_tile);
+
+               TileSpawnerSingleton.Instance.AddToRecycleBin(l_collidedObject);
             }
 
             ObstacleFlyingBehaviour l_flyingObstacle = l_collidedObject.GetComponent<ObstacleFlyingBehaviour>();
@@ -31,15 +34,17 @@ namespace Behaviours
                {
                   l_mapManager.Clouds.Remove(l_cloud);
                }
+
+               TileSpawnerSingleton.Instance.ObstacleSpawner.ObstacleFlyingSpawnerUtils.AddToRecycleBin(l_collidedObject);
             }
 
             ObstacleGroundedBehaviour l_groundedObstacle = l_collidedObject.GetComponent<ObstacleGroundedBehaviour>();
             if (l_groundedObstacle != null)
             {
                l_mapManager.ObstaclesGrounded.Remove(l_groundedObstacle);
-            }
 
-            Destroy(l_collidedObject);
+               TileSpawnerSingleton.Instance.ObstacleSpawner.ObstacleGroundedSpawnerUtils.AddToRecycleBin(l_collidedObject);
+            }
          }
       }
    }

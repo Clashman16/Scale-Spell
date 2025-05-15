@@ -52,23 +52,27 @@ namespace Behaviours
             SpriteRenderer l_renderer = GetComponent<SpriteRenderer>();
             l_renderer.sprite = Resources.LoadAll<Sprite>(p_spritePath)[(int) m_type];
 
+            bool l_enableCollider = true;
+
             if(m_type != ObstacleType.INBETWEEN)
             {
-               DestroyImmediate(transform.GetChild(0).gameObject);
+               transform.GetChild(0).gameObject.SetActive(false);
                
                if(m_type == ObstacleType.HARMLESS)
                {
-                  DestroyImmediate(GetComponent<Collider2D>());
+                  l_enableCollider = false;
                }
             }
             else
             {
                l_renderer.sprite = Resources.LoadAll<Sprite>(p_spritePath)[(int)ObstacleType.HARMLESS];
-               DestroyImmediate(GetComponent<Collider2D>());
+               l_enableCollider = false;
             }
 
-            DestroyRulers();
+            DisableRulers();
             InitRulers();
+
+            EnableCollider(l_enableCollider);
          }
 
          private void InitRulers()
@@ -80,7 +84,7 @@ namespace Behaviours
             }
          }
 
-         private void DestroyRulers()
+         private void DisableRulers()
          {
             if ((ScoreManagerSingleton.GetInstance().IncreasePotionQuantity >= 0.5 &&
                  ScoreManagerSingleton.GetInstance().DecreasePotionQuantity >= 0.5) ||
@@ -89,7 +93,7 @@ namespace Behaviours
                RulerBehaviour[] l_rulers = GetComponentsInChildren<RulerBehaviour>();
                for (int l_i = 0; l_i < l_rulers.Length; l_i++)
                {
-                  DestroyImmediate(l_rulers[l_i].gameObject);
+                  l_rulers[l_i].gameObject.SetActive(false);
                }
             }
             else
@@ -102,13 +106,13 @@ namespace Behaviours
                      int l_chance = Random.Range(0, 10);
                      if (l_chance >= 2 && l_chance <= 6)
                      {
-                        DestroyImmediate(l_rulers[Random.Range(0, l_rulers.Length)].gameObject);
+                        l_rulers[Random.Range(0, l_rulers.Length)].gameObject.SetActive(false);
                      }
                      else
                      {
                         for (int l_i = 0; l_i < l_rulers.Length; l_i++)
                         {
-                           DestroyImmediate(l_rulers[l_i].gameObject);
+                           l_rulers[l_i].gameObject.SetActive(false);
                         }
                      }
                   }
@@ -121,13 +125,13 @@ namespace Behaviours
                      int l_chance = Random.Range(0, 10);
                      if (l_chance >= 2 && l_chance <= 6)
                      {
-                        DestroyImmediate(l_rulers[Random.Range(0, l_rulers.Length)].gameObject);
+                        l_rulers[Random.Range(0, l_rulers.Length)].gameObject.SetActive(false);
                      }
                      else
                      {
                         for (int l_i = 0; l_i < l_rulers.Length; l_i++)
                         {
-                           DestroyImmediate(l_rulers[l_i].gameObject);
+                           l_rulers[l_i].gameObject.SetActive(false);
                         }
                      }
                   }
@@ -154,7 +158,7 @@ namespace Behaviours
 
             if (l_collider != null)
             {
-               l_collider.enabled = p_enable;
+               gameObject.layer = LayerMask.NameToLayer(p_enable ? "Collidable" : "NotCollidable");
             }
          }
       }

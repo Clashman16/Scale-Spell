@@ -67,7 +67,7 @@ namespace Behaviours
                      float l_actualScale = transform.lossyScale.x;
                      float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
                      float l_scaledDifference = l_difference * 0.1f;
-                     Debug.Log(l_scaledDifference);
+
                      if(l_scaledDifference > 0.001f)
                      {
                         ScoreManagerSingleton.GetInstance().OnDecreasePotionUsed.Invoke(l_difference);
@@ -83,7 +83,7 @@ namespace Behaviours
                   float l_actualScale = transform.lossyScale.x;
                   float l_difference = Mathf.Abs(m_previousScale - l_actualScale);
                   float l_scaledDifference = l_difference * 0.1f;
-                  Debug.Log(l_scaledDifference);
+
                   if (l_scaledDifference > 0.001f)
                   {
                      ScoreManagerSingleton.GetInstance().OnIncreasePotionUsed.Invoke(l_difference);

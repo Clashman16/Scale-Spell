@@ -2,6 +2,7 @@ using Behaviours.Characters;
 using Behaviours.Map;
 using Behaviours.Map.Obstacles;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Utils;
 
@@ -144,6 +145,38 @@ namespace Managers.Spawners.Utils
          }
 
          return l_y;
+      }
+
+      internal override ObstacleBehaviour Spawn(Transform p_tileTransform, EnvironmentEnum p_tileType)
+      {
+         MapManagerSingleton l_mapManager = MapManagerSingleton.GetInstance();
+         List<ObstacleFlyingBehaviour> l_obstacles= l_mapManager.ObstaclesFlying;
+
+         bool l_withBullet = RandomWithBullet(l_obstacles);
+         bool l_isCloud = RandomIsCloud(l_obstacles);
+         string l_prefabName = GetPrefabName(l_isCloud, p_tileType);
+
+         GameObject l_spawnedObject = null;
+
+         if (!IsRecycleBinEmpty)
+         {
+            l_spawnedObject = RemoveFromRecycleBin(l_prefabName);
+         }
+
+         if (l_spawnedObject == null)
+         {
+            l_spawnedObject = Object.Instantiate(Resources.Load<GameObject>(Path.Combine(PrefabsPath, l_prefabName)));
+         }
+
+         Vector3 l_position = l_spawnedObject.transform.position;
+         l_position.x = p_tileTransform.position.x;
+         l_position.y = GetYCoordinate(l_prefabName);
+         l_spawnedObject.transform.position = l_position;
+
+         ObstacleFlyingBehaviour l_obstacleFlying = l_spawnedObject.GetComponent<ObstacleFlyingBehaviour>();
+         l_obstacleFlying.Init(l_withBullet);
+
+         return l_obstacleFlying;
       }
    }
 }
